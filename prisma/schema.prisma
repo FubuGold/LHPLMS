@@ -1,0 +1,291 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Permission {
+  id             String           @id @default(uuid()) @db.Uuid
+  action         Json             @db.JsonB
+  context        Json             @db.JsonB
+  name           String           @db.Text
+  description    String?          @db.Text
+  PermissionRole PermissionRole[]
+}
+
+model Role {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String           @db.Text
+  description    String?          @db.Text
+  PermissionRole PermissionRole[]
+  PolicyRole     PolicyRole[]
+}
+
+model Resource {
+  id             String           @id @default(uuid()) @db.Uuid
+  path           String           @db.Text
+  PolicyResource PolicyResource[]
+}
+
+model Policy {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String           @db.Text
+  description    String?          @db.Text
+  PolicyRole     PolicyRole[]
+  PolicyResource PolicyResource[]
+  PolicyUser     PolicyUser[]
+  PolicyGroup    PolicyGroup[]
+  PolicyClient   PolicyClient[]
+}
+
+model Client {
+  id           String         @id @default(uuid()) @db.Uuid
+  name         String         @db.Text
+  PolicyClient PolicyClient[]
+}
+
+model Group {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        String        @db.Text
+  PolicyGroup PolicyGroup[]
+  UserGroup   UserGroup[]
+}
+
+model User {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String           @db.Text
+  username       String           @unique @db.Text
+  dob            DateTime         @db.Date
+  avatar         String?          @db.Text
+  UserCredential UserCredential[]
+  Token          Token[]
+  Setting        Setting[]
+  Post           Post[]
+  Assignment     Assignment[]
+  Task           Task[]
+  QuestionBank   QuestionBank[]
+  Question       Question[]
+  PolicyUser     PolicyUser[]
+  UserGroup      UserGroup[]
+  UserClass      UserClass[]
+}
+
+model UserCredential {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+}
+
+model Token {
+  id             String   @id @default(uuid()) @db.Uuid
+  value          String   @db.Text
+  expirationTime DateTime @db.Timestamptz()
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Setting {
+  id          String  @id @default(uuid()) @db.Uuid
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name        String  @db.Text
+  description String? @db.Text
+}
+
+model Subject {
+  id           String         @id @default(uuid()) @db.Uuid
+  name         String         @db.Text
+  Class        Class[]
+  QuestionBank QuestionBank[]
+}
+
+model Class {
+  id         String       @id @default(uuid()) @db.Uuid
+  subjectId  String
+  subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Post       Post[]
+  Assignment Assignment[]
+  UserClass  UserClass[]
+}
+
+model Post {
+  id      String @id @default(uuid()) @db.Uuid
+  classId String
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([classId, ownerId])
+}
+
+model Assignment {
+  id         String    @id @default(uuid()) @db.Uuid
+  ownerId    String
+  classId    String
+  name       String    @db.Text
+  start_time DateTime  @db.Timestamptz
+  end_time   DateTime? @db.Timestamptz()
+  is_test    Boolean   @db.Boolean
+
+  owner              User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class              Class                @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  AssignmentQuestion AssignmentQuestion[]
+  Task               Task[]
+}
+
+model AssignmentQuestion {
+  id           String @id @default(uuid()) @db.Uuid
+  assignmentId String
+  statement    String @db.Text
+  origin       String @db.Text
+
+  assignment               Assignment                 @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  AssignmentQuestionChoice AssignmentQuestionChoice[]
+
+  @@index([assignmentId])
+}
+
+model AssignmentQuestionChoice {
+  id                   String             @id @default(uuid()) @db.Uuid
+  assignmentQuestionId String
+  statement            String             @db.Text
+  is_correct           Boolean            @default(false) @db.Boolean
+  assignmentQuestion   AssignmentQuestion @relation(fields: [assignmentQuestionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([assignmentQuestionId])
+}
+
+model Task {
+  id           String     @id @default(uuid()) @db.Uuid
+  userId       String
+  assignmentId String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([assignmentId])
+}
+
+model QuestionBank {
+  id        String @id @default(uuid()) @db.Uuid
+  subjectId String
+  ownerId   String
+  name      String @db.Text
+
+  subject  Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner    User       @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Question Question[]
+
+  @@index([subjectId])
+}
+
+model Question {
+  id             String           @id @default(uuid()) @db.Uuid
+  questionBankId String
+  ownerId        String
+  questionBank   QuestionBank     @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner          User             @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  QuestionChoice QuestionChoice[]
+
+  @@index([questionBankId])
+}
+
+model QuestionChoice {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String
+  statement  String   @db.Text
+  isCorrect  Boolean  @db.Boolean
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([questionId])
+}
+
+model PermissionRole {
+  permissionId String
+  roleId       String
+
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([permissionId, roleId])
+}
+
+model PolicyRole {
+  policyId String
+  roleId   String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, roleId])
+}
+
+model PolicyResource {
+  policyId   String
+  resourceId String
+
+  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, resourceId])
+}
+
+model PolicyUser {
+  policyId String
+  userId   String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, userId])
+}
+
+model PolicyGroup {
+  policyId String
+  groupId  String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, groupId])
+}
+
+model PolicyClient {
+  policyId String
+  clientId String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, clientId])
+}
+
+model UserGroup {
+  userId  String
+  groupId String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userId, groupId])
+}
+
+model UserClass {
+  userId  String
+  classId String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userId, classId])
+}
