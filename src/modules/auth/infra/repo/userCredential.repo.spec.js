@@ -22,8 +22,4 @@ describe("User Credential Repo unit test", () => {
         expect(repo.addUserCredential).toBeDefined();
         expect(repo.deleteUserCredential).toBeDefined();
     });
-})
-
-describe("User Credential Repo integration tests", () => {
-
 });
