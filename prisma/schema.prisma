@@ -30,9 +30,21 @@ model Role {
   PolicyRole     PolicyRole[]
 }
 
+enum ResourceType {
+  CLASSROOM
+  POST
+  ASSIGNMENT
+  SUBJECT
+  SUBMISSION
+  GROUP
+  USER
+  QUESTIONBANK
+}
+
 model Resource {
   id             String           @id @default(uuid()) @db.Uuid
-  path           String           @db.Text
+  resourceId     String           @db.Uuid
+  resourceType   ResourceType
   PolicyResource PolicyResource[]
 }
 
