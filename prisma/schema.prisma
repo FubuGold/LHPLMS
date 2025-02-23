@@ -67,7 +67,6 @@ model User {
   dob            DateTime         @db.Date
   avatar         String?          @db.Text
   UserCredential UserCredential[]
-  Token          Token[]
   Setting        Setting[]
   Post           Post[]
   Assignment     Assignment[]
@@ -86,14 +85,6 @@ model UserCredential {
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
-}
-
-model Token {
-  id             String   @id @default(uuid()) @db.Uuid
-  value          String   @db.Text
-  expirationTime DateTime @db.Timestamptz()
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Setting {
