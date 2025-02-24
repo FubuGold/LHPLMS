@@ -1,4 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Bind } from '@nestjs/common';
 
 @Controller('auth')
-export class AuthController {}
+export class AuthController {
+  @Get()
+  test() {}
+}

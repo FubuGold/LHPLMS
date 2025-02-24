@@ -64,6 +64,66 @@ model Client {
   PolicyClient PolicyClient[]
 }
 
+model PermissionRuleset {
+  rulesetId String @db.Uuid
+  ruleId    String @db.Uuid
+
+  ruleset    Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([ruleId, rulesetId])
+}
+
+model PolicyRuleset {
+  policyId  String @db.Uuid
+  rulesetId String @db.Uuid
+
+  policy Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role   Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, rulesetId])
+}
+
+model PolicyResource {
+  policyId   String @db.Uuid
+  resourceId String @db.Uuid
+
+  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, resourceId])
+}
+
+model PolicyUser {
+  policyId String @db.Uuid
+  userId   String @db.Uuid
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, userId])
+}
+
+model PolicyGroup {
+  policyId String @db.Uuid
+  groupId  String @db.Uuid
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, groupId])
+}
+
+model PolicyClient {
+  policyId String @db.Uuid
+  clientId String @db.Uuid
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, clientId])
+}
+
 model Group {
   id          String        @id @default(uuid()) @db.Uuid
   name        String        @db.Text
@@ -87,72 +147,20 @@ model User {
   PolicyUser     PolicyUser[]
   UserGroup      UserGroup[]
   UserClass      UserClass[]
+  UserToken      UserToken[]
 }
 
-model PermissionRuleset {
-  rulesetId String
-  ruleId    String
-
-  ruleset    Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  permission Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([ruleId, rulesetId])
-}
-
-model PolicyRuleset {
-  policyId  String
-  rulesetId String
-
-  policy Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  role   Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, rulesetId])
-}
-
-model PolicyResource {
-  policyId   String
-  resourceId String
-
-  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, resourceId])
-}
-
-model PolicyUser {
-  policyId String
-  userId   String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, userId])
-}
-
-model PolicyGroup {
-  policyId String
-  groupId  String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, groupId])
-}
-
-model PolicyClient {
-  policyId String
-  clientId String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, clientId])
+model UserToken {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+  token  String @db.Text
 }
 
 model UserCredential {
   id       String @id @default(uuid()) @db.Uuid
   password String @db.Text
-  userId   String
+  userId   String @db.Uuid
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
@@ -160,7 +168,7 @@ model UserCredential {
 
 model Setting {
   id          String  @id @default(uuid()) @db.Uuid
-  userId      String
+  userId      String  @db.Uuid
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name        String  @db.Text
   description String? @db.Text
@@ -175,7 +183,7 @@ model Subject {
 
 model Class {
   id         String       @id @default(uuid()) @db.Uuid
-  subjectId  String
+  subjectId  String       @db.Uuid
   subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Post       Post[]
   Assignment Assignment[]
@@ -184,8 +192,8 @@ model Class {
 
 model Post {
   id      String @id @default(uuid()) @db.Uuid
-  classId String
-  ownerId String
+  classId String @db.Uuid
+  ownerId String @db.Uuid
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -194,8 +202,8 @@ model Post {
 
 model Assignment {
   id         String    @id @default(uuid()) @db.Uuid
-  ownerId    String
-  classId    String
+  ownerId    String    @db.Uuid
+  classId    String    @db.Uuid
   name       String    @db.Text
   start_time DateTime  @db.Timestamptz
   end_time   DateTime? @db.Timestamptz()
@@ -209,7 +217,7 @@ model Assignment {
 
 model AssignmentQuestion {
   id           String @id @default(uuid()) @db.Uuid
-  assignmentId String
+  assignmentId String @db.Uuid
   statement    String @db.Text
   origin       String @db.Text
 
@@ -221,7 +229,7 @@ model AssignmentQuestion {
 
 model AssignmentQuestionChoice {
   id                   String             @id @default(uuid()) @db.Uuid
-  assignmentQuestionId String
+  assignmentQuestionId String             @db.Uuid
   statement            String             @db.Text
   is_correct           Boolean            @default(false) @db.Boolean
   assignmentQuestion   AssignmentQuestion @relation(fields: [assignmentQuestionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -231,8 +239,8 @@ model AssignmentQuestionChoice {
 
 model Task {
   id           String     @id @default(uuid()) @db.Uuid
-  userId       String
-  assignmentId String
+  userId       String     @db.Uuid
+  assignmentId String     @db.Uuid
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -241,8 +249,8 @@ model Task {
 
 model QuestionBank {
   id        String @id @default(uuid()) @db.Uuid
-  subjectId String
-  ownerId   String
+  subjectId String @db.Uuid
+  ownerId   String @db.Uuid
   name      String @db.Text
 
   subject  Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -254,8 +262,8 @@ model QuestionBank {
 
 model Question {
   id             String           @id @default(uuid()) @db.Uuid
-  questionBankId String
-  ownerId        String
+  questionBankId String           @db.Uuid
+  ownerId        String           @db.Uuid
   questionBank   QuestionBank     @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   owner          User             @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   QuestionChoice QuestionChoice[]
@@ -265,7 +273,7 @@ model Question {
 
 model QuestionChoice {
   id         String   @id @default(uuid()) @db.Uuid
-  questionId String
+  questionId String   @db.Uuid
   statement  String   @db.Text
   isCorrect  Boolean  @db.Boolean
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -274,8 +282,8 @@ model QuestionChoice {
 }
 
 model UserGroup {
-  userId  String
-  groupId String
+  userId  String @db.Uuid
+  groupId String @db.Uuid
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -284,8 +292,8 @@ model UserGroup {
 }
 
 model UserClass {
-  userId  String
-  classId String
+  userId  String @db.Uuid
+  classId String @db.Uuid
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)

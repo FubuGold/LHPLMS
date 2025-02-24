@@ -7,6 +7,15 @@
       {
         "regenerator": true
       }
+    ],
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "@": "./src"
+        }
+      }
     ]
   ]
 }
