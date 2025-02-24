@@ -1,11 +1,13 @@
 import { Injectable, Dependencies } from '@nestjs/common';
 import { UserCredentialRepo } from '@/modules/auth/infra/repos/userCredential.repo';
+import { userTokenRepo } from '@/modules/auth/infra/repos/userToken.repo';
 import { UserCredential } from '@/modules/auth/domain/entities/userCredential.entity';
 
 @Injectable()
 @Dependencies(UserCredentialRepo)
+@Dependencies(userTokenRepo)
 export class Authenticator {
-  constructor(userCredentialRepo) {
+  constructor(userCredentialRepo, userTokenRepo) {
     this.userCredentialRepo = userCredentialRepo;
   }
   async createUserCredential(userId, password) {
