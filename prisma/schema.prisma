@@ -13,38 +13,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Permission {
-  id             String           @id @default(uuid()) @db.Uuid
-  action         Json             @db.JsonB
-  context        Json             @db.JsonB
-  name           String           @db.Text
-  description    String?          @db.Text
-  PermissionRole PermissionRole[]
+enum Action {
+  CREATE
+  READ
+  UPDATE
+  DELETE
 }
 
-model Role {
-  id             String           @id @default(uuid()) @db.Uuid
-  name           String           @db.Text
-  description    String?          @db.Text
-  PermissionRole PermissionRole[]
-  PolicyRole     PolicyRole[]
+model Rule {
+  id                String              @id @default(uuid()) @db.Uuid
+  action            Action
+  resource          Json                @db.JsonB
+  environment       Json                @db.JsonB
+  subject           Json                @db.JsonB
+  name              String              @db.Text
+  description       String?             @db.Text
+  PermissionRuleset PermissionRuleset[]
+
+  @@index([resource, environment, subject], type: Gin)
 }
 
-enum ResourceType {
-  CLASSROOM
-  POST
-  ASSIGNMENT
-  SUBJECT
-  SUBMISSION
-  GROUP
-  USER
-  QUESTIONBANK
+model Ruleset {
+  id                String              @id @default(uuid()) @db.Uuid
+  name              String              @db.Text
+  description       String?             @db.Text
+  PermissionRuleset PermissionRuleset[]
+  PolicyRuleset     PolicyRuleset[]
 }
 
 model Resource {
   id             String           @id @default(uuid()) @db.Uuid
-  resourceId     String           @db.Uuid
-  resourceType   ResourceType
+  path           String           @db.Text
   PolicyResource PolicyResource[]
 }
 
@@ -52,7 +51,7 @@ model Policy {
   id             String           @id @default(uuid()) @db.Uuid
   name           String           @db.Text
   description    String?          @db.Text
-  PolicyRole     PolicyRole[]
+  PolicyRuleset  PolicyRuleset[]
   PolicyResource PolicyResource[]
   PolicyUser     PolicyUser[]
   PolicyGroup    PolicyGroup[]
@@ -88,6 +87,66 @@ model User {
   PolicyUser     PolicyUser[]
   UserGroup      UserGroup[]
   UserClass      UserClass[]
+}
+
+model PermissionRuleset {
+  rulesetId String
+  ruleId    String
+
+  ruleset    Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([ruleId, rulesetId])
+}
+
+model PolicyRuleset {
+  policyId  String
+  rulesetId String
+
+  policy Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role   Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, rulesetId])
+}
+
+model PolicyResource {
+  policyId   String
+  resourceId String
+
+  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, resourceId])
+}
+
+model PolicyUser {
+  policyId String
+  userId   String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, userId])
+}
+
+model PolicyGroup {
+  policyId String
+  groupId  String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, groupId])
+}
+
+model PolicyClient {
+  policyId String
+  clientId String
+
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([policyId, clientId])
 }
 
 model UserCredential {
@@ -212,66 +271,6 @@ model QuestionChoice {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([questionId])
-}
-
-model PermissionRole {
-  permissionId String
-  roleId       String
-
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([permissionId, roleId])
-}
-
-model PolicyRole {
-  policyId String
-  roleId   String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, roleId])
-}
-
-model PolicyResource {
-  policyId   String
-  resourceId String
-
-  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, resourceId])
-}
-
-model PolicyUser {
-  policyId String
-  userId   String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, userId])
-}
-
-model PolicyGroup {
-  policyId String
-  groupId  String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, groupId])
-}
-
-model PolicyClient {
-  policyId String
-  clientId String
-
-  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([policyId, clientId])
 }
 
 model UserGroup {
