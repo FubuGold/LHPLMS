@@ -18,7 +18,8 @@ describe('UserService', () => {
   });
 
   it('should have essential function', () => {
-    expect(service.get).toBeDefined();
+    expect(service.getOne).toBeDefined();
+    expect(service.getAll).toBeDefined();
     expect(service.register).toBeDefined();
     expect(service.login).toBeDefined();
     expect(service.delete).toBeDefined();

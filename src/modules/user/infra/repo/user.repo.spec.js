@@ -1,25 +1,41 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepo } from './user.repo';
+import { Test } from '@nestjs/testing';
+import { PrismaService } from './database/prisma.service';
+import { userRepo } from './user.repo';
 
 describe('User Repo unit test', () => {
   let repo;
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [userRepo, PrismaService],
+    }).compile();
 
-  beforeEach(async () => {
-    repo = new UserRepo;
+    repo = module.get(userRepo);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(repo).toBeDefined();
   });
   
   it('should have the required method', () => {
-    expect(repo.getUser).toBeDefined();
-    expect(repo.updateUser).toBeDefined();
-    expect(repo.createUser).toBeDefined();
-    expect(repo.deleteUser).toBeDefined();
+    expect(repo.getOne).toBeDefined();
+    expect(repo.getAll).toBeDefined();
+    expect(repo.update).toBeDefined();
+    expect(repo.create).toBeDefined();
+    expect(repo.delete).toBeDefined();
   })
 });
 
 describe('User Repo integration test', () => {
+  let repo;
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [userRepo, PrismaService],
+    }).compile();
 
+    repo = module.get(userRepo);
+  });
+
+  it('should have saved the user', () => {
+    
+  })
 });

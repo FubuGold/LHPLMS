@@ -1,17 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common'
+import { PrismaService } from './database/prisma.service'
+import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
+@Dependencies(PrismaService)
 export class userRepo {
-    getUser() {
-
+    constructor(PrismaService) {
+        this.prisma = PrismaService;
     }
-    updateUser() {
 
+    async getAll() {
+        return this.prisma.user.findMany();
     }
-    createUser() {
-
+    async getOne(id) {
+        return new User(
+            await this.prisma.user.findUnique({
+                where: { id: id },
+            })
+        );
     }
-    deleteUser() {
+    async create(user) {
+        await this.prisma.user.create({
+            data: user,
+        });
+    }
+    async delete(user) {
+        await this.prisma.user.delete({
+            where: { id: user.id }
+        });
+    }
+    async update() {
         
     }
 }
