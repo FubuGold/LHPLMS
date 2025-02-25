@@ -1,16 +1,16 @@
 import { Test } from '@nestjs/testing';
-import { userTokenRepo } from './userToken.repo';
 import { PrismaService } from '../database/prisma.service';
+import { UserTokenRepo } from './userToken.repo';
 import { UserToken } from '@/modules/auth/domain/entities/userToken.entity';
 
 describe('userToken repo integration test', () => {
   let repo;
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [userTokenRepo, PrismaService],
+      providers: [UserTokenRepo, PrismaService],
     }).compile();
 
-    repo = module.get(userTokenRepo);
+    repo = module.get(UserTokenRepo);
   });
 
   it('should be defined', () => {
@@ -24,9 +24,16 @@ describe('userToken repo integration test', () => {
     const response = await repo.getByUserId(
       '692e81fa-63fa-4991-a55f-0481b3d36ee2',
     );
-    console.log(response);
     await expect(response.token).toEqual('haha');
 
     await repo.delete(response);
+  });
+
+  it('should not delete invalid user token', async () => {
+    await expect(
+      repo.delete(
+        new UserToken('invalid0-user-cred-enti-al81b3d36ee2', 'hahahahah'),
+      ),
+    ).resolves.not.toThrow();
   });
 });

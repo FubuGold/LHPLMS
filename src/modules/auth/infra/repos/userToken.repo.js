@@ -4,7 +4,7 @@ import { UserToken } from '../../domain/entities/userToken.entity';
 
 @Injectable()
 @Dependencies(PrismaService)
-export class userTokenRepo {
+export class UserTokenRepo {
   constructor(PrismaService) {
     this.prisma = PrismaService;
   }
@@ -37,8 +37,12 @@ export class userTokenRepo {
   }
 
   async delete(userToken) {
-    await this.prisma.userToken.delete({
-      where: { userId: userToken.userId },
-    });
+    try {
+      await this.prisma.userToken.delete({
+        where: { userId: userToken.userId },
+      });
+    } catch (err) {
+      return;
+    }
   }
 }
