@@ -9,10 +9,14 @@ describe('UserController', () => {
       controllers: [UserController],
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    controller = module.get(UserController);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  it('should have correct endpoint', () => {
+
+  })
 });

@@ -1,15 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { userRepo } from './user.repo';
+import { UserRepo } from './user.repo';
 
 describe('User Repo unit test', () => {
   let repo;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      providers: [userRepo],
-    }).compile();
-
-    repo = module.get(userRepo);
+    repo = new UserRepo;
   });
 
   it('should be defined', () => {

@@ -2,23 +2,36 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
-    getUser() {
+
+    async get(id) {
+        
+    }
+
+    async register() {
 
     }
 
-    registerUser() {
+    async login() {
 
     }
 
-    loginUser() {
+    async delete(id) {
 
     }
 
-    deleteUser() {
+    async update(id) {
 
     }
 
-    updateUserInfo() {
+    async updateSetting(id) {
+
+    }
+
+    async getSetting(id) {
+
+    }
+
+    createToken(id) {
 
     }
 }
