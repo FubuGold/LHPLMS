@@ -1,23 +1,28 @@
 import { Injectable, Dependencies } from '@nestjs/common'
-import { PrismaService } from './database/prisma.service'
+import { PrismaService } from '../database/prisma.service'
 import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
 @Dependencies(PrismaService)
-export class userRepo {
+export class UserRepo {
     constructor(PrismaService) {
         this.prisma = PrismaService;
     }
 
     async getAll() {
-        return this.prisma.user.findMany();
+        let res = this.prisma.user.findMany();
+        return res;
     }
     async getOne(id) {
-        return new User(
-            await this.prisma.user.findUnique({
-                where: { id: id },
-            })
-        );
+        try {
+            return new User( 
+                await this.prisma.user.findUnique({
+                    where: { id: id },
+            }));
+        }
+        catch (err) {
+            return null;
+        }
     }
     async create(user) {
         await this.prisma.user.create({
@@ -29,7 +34,13 @@ export class userRepo {
             where: { id: user.id }
         });
     }
-    async update() {
-        
+    async deleteAll() {
+        await this.prisma.user.deleteMany({});
+    }
+    async update(user) {
+        await this.prisma.user.update({
+            where : { id : user.id},
+            data : user
+        })
     }
 }
