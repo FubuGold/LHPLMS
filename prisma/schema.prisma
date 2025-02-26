@@ -65,8 +65,8 @@ model Client {
 }
 
 model PermissionRuleset {
-  rulesetId String @db.Uuid
-  ruleId    String @db.Uuid
+  rulesetId String @unique @db.Uuid
+  ruleId    String @unique @db.Uuid
 
   ruleset    Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   permission Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -75,8 +75,8 @@ model PermissionRuleset {
 }
 
 model PolicyRuleset {
-  policyId  String @db.Uuid
-  rulesetId String @db.Uuid
+  policyId  String @unique @db.Uuid
+  rulesetId String @unique @db.Uuid
 
   policy Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role   Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -115,8 +115,8 @@ model PolicyGroup {
 }
 
 model PolicyClient {
-  policyId String @db.Uuid
-  clientId String @db.Uuid
+  policyId String @unique @db.Uuid
+  clientId String @unique @db.Uuid
 
   policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -160,7 +160,8 @@ model UserToken {
 model UserCredential {
   id       String @id @default(uuid()) @db.Uuid
   password String @db.Text
-  userId   String @db.Uuid
+  salt     String @db.Text
+  userId   String @unique @db.Uuid
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
@@ -168,7 +169,7 @@ model UserCredential {
 
 model Setting {
   id          String  @id @default(uuid()) @db.Uuid
-  userId      String  @db.Uuid
+  userId      String  @unique @db.Uuid
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name        String  @db.Text
   description String? @db.Text
@@ -183,7 +184,7 @@ model Subject {
 
 model Class {
   id         String       @id @default(uuid()) @db.Uuid
-  subjectId  String       @db.Uuid
+  subjectId  String       @unique @db.Uuid
   subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Post       Post[]
   Assignment Assignment[]
@@ -192,8 +193,8 @@ model Class {
 
 model Post {
   id      String @id @default(uuid()) @db.Uuid
-  classId String @db.Uuid
-  ownerId String @db.Uuid
+  classId String @unique @db.Uuid
+  ownerId String @unique @db.Uuid
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -202,8 +203,8 @@ model Post {
 
 model Assignment {
   id         String    @id @default(uuid()) @db.Uuid
-  ownerId    String    @db.Uuid
-  classId    String    @db.Uuid
+  ownerId    String    @unique @db.Uuid
+  classId    String    @unique @db.Uuid
   name       String    @db.Text
   start_time DateTime  @db.Timestamptz
   end_time   DateTime? @db.Timestamptz()
@@ -217,7 +218,7 @@ model Assignment {
 
 model AssignmentQuestion {
   id           String @id @default(uuid()) @db.Uuid
-  assignmentId String @db.Uuid
+  assignmentId String @unique @db.Uuid
   statement    String @db.Text
   origin       String @db.Text
 
@@ -229,7 +230,7 @@ model AssignmentQuestion {
 
 model AssignmentQuestionChoice {
   id                   String             @id @default(uuid()) @db.Uuid
-  assignmentQuestionId String             @db.Uuid
+  assignmentQuestionId String             @unique @db.Uuid
   statement            String             @db.Text
   is_correct           Boolean            @default(false) @db.Boolean
   assignmentQuestion   AssignmentQuestion @relation(fields: [assignmentQuestionId], references: [id], onDelete: Cascade, onUpdate: Cascade)

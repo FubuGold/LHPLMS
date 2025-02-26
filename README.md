@@ -2,12 +2,10 @@
 
 ## Description
 
-
-
 ## Installation
 
 ```bash
-$ npm install
+$ npm install && npm run prepare
 ```
 
 ## Running the app
