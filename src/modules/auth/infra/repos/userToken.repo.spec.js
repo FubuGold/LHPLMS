@@ -17,7 +17,7 @@ describe('userToken repo integration test', () => {
     expect(repo).toBeDefined();
   });
 
-  it('should save the token', async () => {
+  it('should save, get, and delete the token', async () => {
     await repo.save(
       new UserToken('692e81fa-63fa-4991-a55f-0481b3d36ee2', 'haha'),
     );

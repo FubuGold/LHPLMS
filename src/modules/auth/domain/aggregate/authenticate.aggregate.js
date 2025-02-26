@@ -2,7 +2,7 @@ import { Injectable, Dependencies } from '@nestjs/common';
 import { UserCredentialRepo } from '@/modules/auth/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/modules/auth/infra/repos/userToken.repo';
 import { MessageService } from '@/modules/auth/infra/messages/message.service';
-import { UserCredential } from '@/modules/auth/domain/entities/userCredential.entity';
+import { UserToken } from '@/modules/auth/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -16,37 +16,11 @@ export class Authenticator {
     this.JwtService = JwtService;
   }
 
-  async createUserCredential(userId, password) {
-    const salt = await bcrypt.genSalt(10); // Generate salt
-    const hashedPassword = await bcrypt.hash(password, salt); // Hash password
-
-    await this.UserCredentialRepo.save(
-      new UserCredential(userId, hashedPassword, salt),
-    );
-  }
-
-  async getUserCredential(userId) {
-    return await this.UserCredentialRepo.get(userId);
-  }
-
-  async updateUserCredential(userId, password) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    await this.UserCredentialRepo.save(
-      new UserCredential(userId, hashedPassword, salt),
-    );
-  }
-
-  async deleteUserCredential(userId) {
-    await this.UserCredentialRepo.delete(userId);
-  }
-
-  async getUserByUserCredential(userId, password) {
-    const user = await this.MessageService.message('userService.get', userId);
+  async getUserByUserCredential(username, password) {
+    const user = await this.MessageService.message('userService.getByUsername', username);
     if (!user) return undefined;
 
-    const credential = await this.UserCredentialRepo.getByUserId(userId);
+    const credential = await this.UserCredentialRepo.getByUserId(user.id);
     if (!credential) return undefined;
 
     const verified = await bcrypt.compare(password, credential.password);
@@ -55,12 +29,27 @@ export class Authenticator {
     return user;
   }
 
-  async login(userId, password) {
-    const user = await this.getUserByUserCredential(userId, password);
+  async generateToken(user) {
+    const access = await JwtService.signAsync(user, process.env["ACCESS_TOKEN"], { expiresIn: "3h" }),
+      refresh = await JwtService.signAsync(user, process.env["REFRESH_TOKEN"], { expiresIn: "7d" });
+
+    const userToken = await UserTokenRepo.getByUserId(user.id);
+    if (userToken) await UserTokenRepo.delete(userToken);
+
+    await UserTokenRepo.save(new UserToken(user.id, refresh));
+
+    return { access, refresh };
+  }
+
+  async login(username, password) {
+    const user = await this.getUserByUserCredential(username, password);
     if (!user) return undefined;
 
+    const { access, refresh } = await generateToken(user);
+
     return {
-      access_token: await this.JwtService.signAsync(user),
+      access_token: access,
+      refresh_token: refresh,
     };
   }
 }
