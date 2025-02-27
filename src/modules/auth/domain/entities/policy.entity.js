@@ -1,5 +1,5 @@
 export class Policy {
-  constructor(id, ruleset, user, client, group, resource) {
+  constructor({ id, ruleset, user, client, group, resource }) {
     if (!ruleset) {
       throw new Error('Ruleset is required');
     }

@@ -24,7 +24,13 @@ describe('UserCredentialRepo integration test', () => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(plainPassword, salt);
 
-    await repo.save(new UserCredential(userId, hashedPassword, salt));
+    await repo.save(
+      new UserCredential({
+        userId: userId,
+        password: hashedPassword,
+        salt: salt,
+      }),
+    );
     const response = await repo.getByUserId(userId);
 
     expect(await bcrypt.compare(plainPassword, response.password)).toBe(true);
@@ -35,11 +41,11 @@ describe('UserCredentialRepo integration test', () => {
   it('should not delete invalid user credential', async () => {
     await expect(
       repo.delete(
-        new UserCredential(
-          'invalid0-user-cred-enti-al81b3d36ee2',
-          'hahahahah',
-          'randomSalt',
-        ),
+        new UserCredential({
+          userId: 'invalid0-user-cred-enti-al81b3d36ee2',
+          password: 'hahahahah',
+          salt: 'randomSalt',
+        }),
       ),
     ).resolves.not.toThrow();
   });

@@ -19,7 +19,10 @@ describe('userToken repo integration test', () => {
 
   it('should save, get, and delete the token', async () => {
     await repo.save(
-      new UserToken('692e81fa-63fa-4991-a55f-0481b3d36ee2', 'haha'),
+      new UserToken({
+        userId: '692e81fa-63fa-4991-a55f-0481b3d36ee2',
+        token: 'haha',
+      }),
     );
     const response = await repo.getByUserId(
       '692e81fa-63fa-4991-a55f-0481b3d36ee2',
@@ -32,7 +35,10 @@ describe('userToken repo integration test', () => {
   it('should not delete invalid user token', async () => {
     await expect(
       repo.delete(
-        new UserToken('invalid0-user-cred-enti-al81b3d36ee2', 'hahahahah'),
+        new UserToken({
+          userId: 'invalid0-user-cred-enti-al81b3d36ee2',
+          token: 'hahahahah',
+        }),
       ),
     ).resolves.not.toThrow();
   });

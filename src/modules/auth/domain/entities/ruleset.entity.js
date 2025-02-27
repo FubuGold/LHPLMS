@@ -1,5 +1,5 @@
 export class Ruleset {
-  constructor(id, name, description, rules) {
+  constructor({ id, name, description, rules }) {
     if (!id || !name || !rules)
       throw new Error('id, name, and rules must not be empty');
 

@@ -1,5 +1,5 @@
 export class UserToken {
-  constructor(userId, token) {
+  constructor({ userId, token }) {
     this.userId = userId;
     this.token = token;
     Object.freeze(this);
