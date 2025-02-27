@@ -1,3 +1,3 @@
 export const AUTH_PATTERN = {
-    LOGIN: '',
+    LOGIN: 'auth.login',
 }

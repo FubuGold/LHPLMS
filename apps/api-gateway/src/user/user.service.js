@@ -16,20 +16,20 @@ export class UserService {
         return await this.userClient.send(USER_PATTERN.GET_ALL,{});
     }
 
-    async register() {
-        return await this.userClient.send(USER_PATTERN.REGISTER, {});
+    async register(payload) {
+        return await this.userClient.send(USER_PATTERN.REGISTER, payload);
     }
 
     async delete(id) {
         await this.userClient.send(USER_PATTERN.DELETE,id);
     }
 
-    async update(id) {
-        await this.userClient.send(USER_PATTERN.UPDATE,{});
+    async update(id,payload) {
+        await this.userClient.send(USER_PATTERN.UPDATE,{...payload, id: id});
     }
 
-    async saveSetting() {
-        await this.userClient.send(USER_PATTERN.UPDATE_SETTING,{});
+    async updateSetting(id,payload) {
+        await this.userClient.send(USER_PATTERN.UPDATE_SETTING,{...payload, id: id});
     }
 
     async getSetting(id) {
@@ -37,6 +37,7 @@ export class UserService {
     }
 
     async getTask(id) {
-        return await this.userClient.send(USER_PATTERN.GET_TASK,id);
+        return 'Mock getTask function';
+        // return await this.userClient.send(USER_PATTERN.GET_TASK,id);
     }
 }

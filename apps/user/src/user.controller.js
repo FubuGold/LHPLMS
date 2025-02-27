@@ -1,13 +1,14 @@
-import { Controller, Bind, Get, Post, Patch, Delete, Param, Request } from '@nestjs/common';
+import { Controller, Bind } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_PATTERN } from '@app/contracts/user'
 
 import { UserService } from './app/services/user.service';
 
 @Controller()
+@Dependencies(UserService)
 export class UserController {
-    constructor() {
-        this.service = UserService;
+    constructor(userService) {
+        this.service = userService;
     }
 
     @MessagePattern(USER_PATTERN.GET_ONE)

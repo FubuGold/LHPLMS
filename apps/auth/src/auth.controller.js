@@ -1,12 +1,14 @@
-import { Controller, Bind, Post, Param, Dependencies } from '@nestjs/common';
+import { Controller, Bind, Dependencies } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { AUTH_PATTERN } from '@app/contracts/auth'
 import { Authenticator } from './domain/aggregate/authenticate.aggregate';
 
-@Controller('auth')
+@Controller()
 @Dependencies(Authenticator)
 export class AuthController {
-  @Post('/login')
-  @Bind(Param())
-  login(params) {
+  @MessagePattern(AUTH_PATTERN.LOGIN)
+  @Bind(Payload())
+  login(payload) {
 
   }
 }
