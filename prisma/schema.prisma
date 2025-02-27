@@ -23,14 +23,13 @@ enum Action {
 model Rule {
   id                String              @id @default(uuid()) @db.Uuid
   action            Action
-  resource          Json                @db.JsonB
   environment       Json                @db.JsonB
   subject           Json                @db.JsonB
   name              String              @db.Text
   description       String?             @db.Text
   PermissionRuleset PermissionRuleset[]
 
-  @@index([resource, environment, subject], type: Gin)
+  @@index([environment, subject], type: Gin)
 }
 
 model Ruleset {
@@ -42,9 +41,53 @@ model Ruleset {
 }
 
 model Resource {
-  id             String           @id @default(uuid()) @db.Uuid
-  path           String           @db.Text
-  PolicyResource PolicyResource[]
+  id                   String                 @id @default(uuid()) @db.Uuid
+  path                 String                 @db.Text
+  PolicyResource       PolicyResource[]
+  ResourcePost         ResourcePost[]
+  ResourceClass        ResourceClass[]
+  ResourceAssignment   ResourceAssignment[]
+  ResourceQuestionBank ResourceQuestionBank[]
+}
+
+model ResourcePost {
+  resourceId String @db.Uuid
+  postId     String @db.Uuid
+
+  resource Resource  @relation(fields: [resourceId], references: [id])
+  post     ClassPost @relation(fields: [postId], references: [id])
+
+  @@id([resourceId, postId])
+}
+
+model ResourceClass {
+  resourceId String @db.Uuid
+  classId    String @db.Uuid
+
+  resource Resource @relation(fields: [resourceId], references: [id])
+  class    Class    @relation(fields: [classId], references: [id])
+
+  @@id([resourceId, classId])
+}
+
+model ResourceAssignment {
+  resourceId   String @db.Uuid
+  assignmentId String @db.Uuid
+
+  resource   Resource   @relation(fields: [resourceId], references: [id])
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+
+  @@id([resourceId, assignmentId])
+}
+
+model ResourceQuestionBank {
+  resourceId     String @db.Uuid
+  questionBankId String @db.Uuid
+
+  resource     Resource     @relation(fields: [resourceId], references: [id])
+  questionBank QuestionBank @relation(fields: [questionBankId], references: [id])
+
+  @@id([resourceId, questionBankId])
 }
 
 model Policy {
@@ -132,22 +175,22 @@ model Group {
 }
 
 model User {
-  id             String           @id @default(uuid()) @db.Uuid
-  name           String           @db.Text
-  username       String           @unique @db.Text
-  dob            DateTime         @db.Date
-  avatar         String?          @db.Text
-  UserCredential UserCredential[]
-  Setting        Setting[]
-  Post           Post[]
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String          @db.Text
+  username       String          @unique @db.Text
+  dob            DateTime        @db.Date
+  avatar         String?         @db.Text
+  ClassPost      ClassPost[]
   Assignment     Assignment[]
-  Task           Task[]
+  UserTask       UserTask[]
   QuestionBank   QuestionBank[]
   Question       Question[]
   PolicyUser     PolicyUser[]
   UserGroup      UserGroup[]
   UserClass      UserClass[]
-  UserToken      UserToken[]
+  UserSetting    UserSetting?
+  UserCredential UserCredential?
+  UserToken      UserToken?
 }
 
 model UserToken {
@@ -163,11 +206,9 @@ model UserCredential {
   salt     String @db.Text
   userId   String @unique @db.Uuid
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([userId])
 }
 
-model Setting {
+model UserSetting {
   id          String  @id @default(uuid()) @db.Uuid
   userId      String  @unique @db.Uuid
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -175,29 +216,61 @@ model Setting {
   description String? @db.Text
 }
 
+model UserTask {
+  id           String     @id @default(uuid()) @db.Uuid
+  userId       String     @db.Uuid
+  assignmentId String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([assignmentId])
+}
+
+model UserGroup {
+  userId  String @db.Uuid
+  groupId String @db.Uuid
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userId, groupId])
+}
+
+model UserClass {
+  userId  String @db.Uuid
+  classId String @db.Uuid
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userId, classId])
+}
+
 model Subject {
   id           String         @id @default(uuid()) @db.Uuid
   name         String         @db.Text
-  Class        Class[]
   QuestionBank QuestionBank[]
+  Class        Class[]
 }
 
 model Class {
-  id         String       @id @default(uuid()) @db.Uuid
-  subjectId  String       @db.Uuid
-  subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Post       Post[]
-  Assignment Assignment[]
-  UserClass  UserClass[]
+  id            String          @id @default(uuid()) @db.Uuid
+  subjectId     String          @db.Uuid
+  subject       Subject?        @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ClassPost     ClassPost[]
+  Assignment    Assignment[]
+  UserClass     UserClass[]
+  ResourceClass ResourceClass[]
 }
 
-model Post {
-  id      String @id @default(uuid()) @db.Uuid
-  classId String @db.Uuid
-  ownerId String @db.Uuid
-  content String @db.Text
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model ClassPost {
+  id           String         @id @default(uuid()) @db.Uuid
+  classId      String         @db.Uuid
+  ownerId      String         @db.Uuid
+  content      String         @db.Text
+  owner        User           @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class        Class          @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ResourcePost ResourcePost[]
 
   @@index([classId, ownerId])
 }
@@ -214,7 +287,8 @@ model Assignment {
   owner              User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   class              Class                @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   AssignmentQuestion AssignmentQuestion[]
-  Task               Task[]
+  UserTask           UserTask[]
+  ResourceAssignment ResourceAssignment[]
 }
 
 model AssignmentQuestion {
@@ -239,25 +313,16 @@ model AssignmentQuestionChoice {
   @@index([assignmentQuestionId])
 }
 
-model Task {
-  id           String     @id @default(uuid()) @db.Uuid
-  userId       String     @db.Uuid
-  assignmentId String     @db.Uuid
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([assignmentId])
-}
-
 model QuestionBank {
   id        String @id @default(uuid()) @db.Uuid
   subjectId String @db.Uuid
   ownerId   String @db.Uuid
   name      String @db.Text
 
-  subject  Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  owner    User       @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Question Question[]
+  subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner                User                   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Question             Question[]
+  ResourceQuestionBank ResourceQuestionBank[]
 
   @@index([subjectId])
 }
@@ -281,24 +346,4 @@ model QuestionChoice {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([questionId])
-}
-
-model UserGroup {
-  userId  String @db.Uuid
-  groupId String @db.Uuid
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([userId, groupId])
-}
-
-model UserClass {
-  userId  String @db.Uuid
-  classId String @db.Uuid
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([userId, classId])
 }
