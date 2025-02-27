@@ -11,7 +11,7 @@
     "start:dev": "nodemon",
     "test": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/backend/test/jest-e2e.json",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -51,8 +51,15 @@
       "js",
       "json"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".spec.js$",
-    "coverageDirectory": "../coverage"
+    "coverageDirectory": "./coverage",
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/contracts(|/.*)$": "<rootDir>/libs/contracts/src/$1"
+    }
   }
 }

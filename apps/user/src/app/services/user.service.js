@@ -3,23 +3,19 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class UserService {
 
-    getOne(id) {
+    async getOne(id) {
         
     }
     
-    getAll() {
+    async getAll() {
         
     }
 
-    register() {
+    async register() {
 
     }
 
-    login() {
-
-    }
-
-    delete(id) {
+    async delete(id) {
 
     }
 
@@ -32,10 +28,6 @@ export class UserService {
     }
 
     async getSetting(id) {
-
-    }
-
-    createToken(id) {
 
     }
 }
