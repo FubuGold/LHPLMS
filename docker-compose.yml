@@ -25,6 +25,21 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+  opa:
+    image: openpolicyagent/opa:latest
+    container_name: opa
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "--addr=0.0.0.0:8181"
+      - "/policies"
+    ports:
+      - "8181:8181" # OPA API endpoint
+    volumes:
+      - ./rules:/policies # Mount policies directory
+    networks:
+      - local
 
 networks:
   local:

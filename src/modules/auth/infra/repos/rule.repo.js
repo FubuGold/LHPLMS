@@ -25,12 +25,6 @@ export class RuleRepo {
     return response;
   }
 
-  async getById(id) {
-    return await this.prisma.rule.findUnique({
-      id: id,
-    });
-  }
-
   async delete(rule) {
     try {
       await this.prisma.rule.delete({
