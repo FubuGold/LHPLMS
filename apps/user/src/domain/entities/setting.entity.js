@@ -1,8 +1,8 @@
 export class Setting {
-    constructor(userId,name,description) {
-        this.userId = userId;
-        this.name = name;
-        this.description = description;
+    constructor(obj) {
+        this.userId = obj.userId;
+        this.name = obj.name;
+        this.description = obj.description;
         Object.freeze(this);
     }
 }

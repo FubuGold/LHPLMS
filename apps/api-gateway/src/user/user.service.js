@@ -1,8 +1,8 @@
 import { Injectable, Inject, Bind } from '@nestjs/common';
-import { USER_PATTERN } from '@app/contracts/user'
+import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 
 @Injectable()
-@Bind(Inject('USER_CLIENT'))
+@Bind(Inject('USER_SERVICE'))
 export class UserService {
     constructor(userClient) {
         this.userClient = userClient;
@@ -14,6 +14,14 @@ export class UserService {
 
     async getAll() {
         return await this.userClient.send(USER_PATTERN.GET_ALL,{});
+    }
+
+    async getTask(id) {
+        return await this.userClient.send(USER_PATTERN.GET_TASK,id);
+    }
+
+    async getSetting(id) {
+        return await this.userClient.send(USER_PATTERN.GET_SETTING,id);
     }
 
     async register(payload) {
@@ -32,12 +40,4 @@ export class UserService {
         await this.userClient.send(USER_PATTERN.UPDATE_SETTING,{...payload, id: id});
     }
 
-    async getSetting(id) {
-        return await this.userClient.send(USER_PATTERN.GET_SETTING,id);
-    }
-
-    async getTask(id) {
-        return 'Mock getTask function';
-        // return await this.userClient.send(USER_PATTERN.GET_TASK,id);
-    }
 }

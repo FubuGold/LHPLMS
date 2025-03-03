@@ -1,5 +1,5 @@
 import { Injectable, Inject, Bind } from '@nestjs/common';
-import { AUTH_PATTERN } from '@app/contracts/user'
+import { AUTH_PATTERN } from '@app/contracts/auth/auth.pattern'
 
 @Injectable()
 @Bind(Inject('AUTH_SERVICE'))
@@ -9,6 +9,6 @@ export class AuthService {
     }
 
     async login(payload) {
-        await this.authClient.send(AUTH_PATTERN.LOGIN);
+        await this.authClient.send(AUTH_PATTERN.LOGIN,payload);
     }
 }

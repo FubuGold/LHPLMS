@@ -1,5 +1,5 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { UserCredential } from '@/modules/auth/domain/entities/userCredential.entity';
+import { UserCredential } from '@/domain/entities/userCredential.entity';
 import { PrismaService } from '../database/prisma.service';
 
 @Injectable()

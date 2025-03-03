@@ -13,6 +13,7 @@ export class UserRepo {
         let res = this.prisma.user.findMany();
         return res;
     }
+
     async getOne(id) {
         try {
             return new User( 
@@ -21,24 +22,43 @@ export class UserRepo {
             }));
         }
         catch (err) {
+            return undefined;
+        }
+    }
+
+    async getByUsername(username) {
+        try {
+            return new User(
+                await this.prisma.user.findUnique({
+                    where: { username: username },
+                })
+            );
+        }
+        catch (err) {
+            return undefined;
+        }
+    }
+
+    async create(user) {
+        try {
+            return await this.prisma.user.create({
+                data: user,
+            });
+        }
+        catch (err) {
             return null;
         }
     }
-    async create(user) {
-        await this.prisma.user.create({
-            data: user,
-        });
-    }
+
     async delete(user) {
         await this.prisma.user.delete({
             where: { id: user.id }
         });
+        return null;
     }
-    async deleteAll() {
-        await this.prisma.user.deleteMany({});
-    }
+
     async update(user) {
-        await this.prisma.user.update({
+        return await this.prisma.user.update({
             where : { id : user.id},
             data : user
         })

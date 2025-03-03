@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "experimentalDecorators": true
+      "target": "ES2023",
+      "module": "CommonJS",
+      "experimentalDecorators": true
   },
   "exclude": [
-    "node_modules"
+      "node_modules",
+      "dist"
   ]
 }

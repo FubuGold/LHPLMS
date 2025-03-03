@@ -1,6 +1,6 @@
-import { Controller, Bind } from '@nestjs/common';
+import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { USER_PATTERN } from '@app/contracts/user'
+import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 
 import { UserService } from './app/services/user.service';
 
@@ -11,45 +11,51 @@ export class UserController {
         this.service = userService;
     }
 
+    @MessagePattern(USER_PATTERN.GET_SETTING)
+    @Bind(Payload())
+    async getSetting(id) {
+        return await this.service.getSetting(id);
+    }
+
+    @MessagePattern(USER_PATTERN.GET_TASK)
+    @Bind(Payload())
+    async getTask(id) {
+        return await this.service.getTask(id);
+    }
+
     @MessagePattern(USER_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
-        return this.service.getOne(id);
+        return await this.service.getOne(id);
     }
 
     @MessagePattern(USER_PATTERN.GET_ALL)
     async getAll() {
-        return this.service.getAll();
+        return await this.service.getAll();
     }
 
-    @MessagePattern()
+    @MessagePattern(USER_PATTERN.REGISTER)
     @Bind(Payload())
-    async getSetting(id) {
-        return this.service.getSetting(id);
+    async register(payload) {
+        await this.service.register(payload);
     }
     
-    @MessagePattern('user.register')
+    @MessagePattern(USER_PATTERN.UPDATE_SETTING)
     @Bind(Payload())
-    async register() {
-        this.service.register();
+    async updateSetting(payload) {
+        await this.service.updateSetting(payload);
     }
     
-    @MessagePattern('user.updateSetting')
+    @MessagePattern(USER_PATTERN.UPDATE)
     @Bind(Payload())
-    async updateSetting() {
-        this.service.updateSetting();
+    async update(payload) {
+        await this.service.update(payload);
     }
     
-    @MessagePattern('user.update')
-    @Bind(Payload())
-    async update() {
-        this.service.update();
-    }
-    
-    @MessagePattern('user.delete')
+    @MessagePattern(USER_PATTERN.DELETE)
     @Bind(Payload())
     async delete(id) {
-        this.service.delete(id);
+        await this.service.delete(id);
     }
 
 }

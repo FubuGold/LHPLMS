@@ -1,8 +1,8 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { UserCredentialRepo } from '@/modules/auth/infra/repos/userCredential.repo';
-import { UserTokenRepo } from '@/modules/auth/infra/repos/userToken.repo';
-import { MessageService } from '@/modules/auth/infra/messages/message.service';
-import { UserToken } from '@/modules/auth/domain/entities/userToken.entity';
+import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
+import { UserTokenRepo } from '@/infra/repos/userToken.repo';
+import { MessageService } from '@/infra/messages/message.service';
+import { UserToken } from '@/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 

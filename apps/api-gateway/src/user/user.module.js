@@ -8,7 +8,7 @@ import { UserController } from './user.controller';
   imports: [
     ClientsModule.register([
       {
-        name: 'USER_CLIENT',
+        name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: { port: 3001 }
       }

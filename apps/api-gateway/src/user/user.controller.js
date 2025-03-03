@@ -1,4 +1,4 @@
-import { Controller, Dependencies, Get, Post, Delete, Patch, Parm, Bind, Body } from '@nestjs/common';
+import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 @Controller('user')
 @Dependencies(UserService)
@@ -8,19 +8,19 @@ export class UserController {
     }
 
     @Get(':id/setting')
-    @Bind(Parm(id))
+    @Bind(Param('id'))
     async getSetting(id) {
         return await this.userService.getSetting(id);
     }
-
+    
     @Get(':id/task')
-    @Bind(Parm(id))
+    @Bind(Param('id'))
     async getTask(id) {
         return await this.userService.getTask(id);
     }
-
+    
     @Get(':id')
-    @Bind(Parm('id'))
+    @Bind(Param('id'))
     async getOne(id) {
         return await this.userService.getOne(id);
     }
@@ -37,19 +37,19 @@ export class UserController {
     }
 
     @Delete(':id')
-    @Bind(Parm('id'))
+    @Bind(Param('id'))
     async delete(id) {
         await this.userService.delete(id);
     }
     
     @Patch(':id/setting')
-    @Bind(Parm('id'), Body())
+    @Bind(Param('id'), Body())
     async updateSetting(id,payload) {
         await this.userService.updateSetting(id,payload);
     }
 
     @Patch(':id')
-    @Bind(Parm('id'), Body())
+    @Bind(Param('id'), Body())
     async update(id,payload) {
         return await this.userService.update(id,payload);
     }

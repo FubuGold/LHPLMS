@@ -3,6 +3,7 @@
     "target": "ES6",
     "experimentalDecorators": true,
     "baseUrl": "./",
+    "module": "CommonJS",
     "paths": {
       "@/*": ["src/*"]
     }

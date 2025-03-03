@@ -1,2 +1,2 @@
 require('@babel/register');
-require('./src/main');
+require('./apps/api-gateway/src/main');

@@ -1,4 +1,24 @@
 {
-  "presets": ["env", "stage-0"],
-  "plugins": ["transform-decorators-legacy"]
-}
+    "presets": ["@babel/preset-env"],
+    "plugins": [
+      ["@babel/plugin-proposal-decorators", { "legacy": true }],
+      [
+        "@babel/plugin-transform-runtime",
+        {
+          "regenerator": true
+        }
+      ],
+      [
+        "module-resolver",
+        {
+          "root": ["./src"],
+          "alias": {
+            "@": "./src",
+            "@app/contracts": "../../libs/contracts/src",
+            "@app/contracts/*": "../../libs/contracts/src/*"
+          }
+        }
+      ]
+    ]
+  }
+  
