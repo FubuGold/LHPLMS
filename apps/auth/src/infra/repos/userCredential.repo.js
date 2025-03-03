@@ -22,11 +22,7 @@ export class UserCredentialRepo {
         password: userCredential.password,
         salt: userCredential.salt,
       },
-      create: {
-        userId: userCredential.userId,
-        password: userCredential.password,
-        salt: userCredential.salt,
-      },
+      create: { ...userCredential },
     });
   }
 
@@ -35,21 +31,15 @@ export class UserCredentialRepo {
       where: { userId: userId },
     });
 
-    return userCredential
-      ? new UserCredential(
-          userCredential.userId,
-          userCredential.password,
-          userCredential.salt,
-        )
-      : null;
+    return userCredential ? new UserCredential({ ...userCredential }) : null;
   }
 
   async getByPassword(password) {
-    return new UserCredential(
-      await this.prisma.userCredential.findMany({
+    return new UserCredential({
+      ...(await this.prisma.userCredential.findMany({
         where: { password: password },
-      }),
-    );
+      })),
+    });
   }
 
   async delete(userCredential) {

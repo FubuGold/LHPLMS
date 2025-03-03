@@ -21,19 +21,19 @@ export class UserTokenRepo {
     });
   }
   async getByUserId(userId) {
-    const userToken = await this.prisma.userToken.findFirst({
+    const userToken = await this.prisma.userToken.findUnique({
       where: { userId: userId },
     });
 
-    return userToken ? new UserToken(userToken.userId, userToken.token) : null;
+    return userToken ? new UserToken({ ...userToken }) : null;
   }
 
   async getByToken(token) {
-    return new UserToken(
-      await this.prisma.userToken.findMany({
+    return new UserToken({
+      ...(await this.prisma.userToken.findMany({
         where: { token: token },
-      }),
-    );
+      })),
+    });
   }
 
   async delete(userToken) {

@@ -1,20 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
+import { Rule } from '../../domain/entities/rule.entity';
 
 @Injectable()
+@Dependencies(PrismaService)
 export class RuleRepo {
-  create(rule) {
-    throw new Error('Method is not implemented');
+  constructor(PrismaService) {
+    this.prisma = PrismaService;
   }
 
-  get(rule) {
-    throw new Error('Method is not implemented');
+  async create(rule) {
+    await this.prisma.rule.create({
+      data: rule,
+    });
   }
 
-  delete(rule) {
-    throw new Error('Method is not implemented');
+  async get(where) {
+    const response = await this.prisma.rule.findMany({
+      where: where,
+    });
+
+    response.map((item) => new Rule({ ...item }));
+
+    return response;
   }
 
-  update(rule) {
-    throw new Error('Method is not implemented');
+  async delete(rule) {
+    try {
+      await this.prisma.rule.delete({
+        where: { id: rule.id },
+      });
+    } catch (err) {
+      return;
+    }
+  }
+
+  async save(rule) {
+    await this.prisma.rule.upsert({
+      where: { id: rule.id },
+      update: { ...rule },
+      create: { ...rule },
+    });
   }
 }

@@ -1,5 +1,5 @@
 export class UserCredential {
-  constructor(userId, password, salt) {
+  constructor({ userId, password, salt }) {
     this.userId = userId;
     this.password = password;
     this.salt = salt;

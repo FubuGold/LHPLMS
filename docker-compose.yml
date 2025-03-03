@@ -8,9 +8,36 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: lms
     ports:
-      - "5432:5432"
+      - "5432:5432" # For db schema migration, wont expose in production
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - local
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI (development only)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  opa:
+    image: openpolicyagent/opa:latest
+    container_name: opa
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "--addr=0.0.0.0:8181"
+      - "/policies"
+    ports:
+      - "8181:8181" # OPA API endpoint
+    volumes:
+      - ./rules:/policies # Mount policies directory
     networks:
       - local
 
@@ -20,3 +47,4 @@ networks:
 
 volumes:
   postgres_data:
+  rabbitmq_data:

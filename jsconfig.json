@@ -6,7 +6,8 @@
     "module": "CommonJS",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "module": "CommonJS"
   },
   "exclude": ["node_modules", "dist"]
 }

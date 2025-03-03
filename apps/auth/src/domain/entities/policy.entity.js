@@ -1,87 +1,38 @@
+import { Ruleset } from './ruleset.entity';
+import { Resource } from './resource.entity';
+
 export class Policy {
-  constructor(id, ruleset, user, client, group, resource) {
-    if (!ruleset) {
+  constructor({ id, ruleset, user, group, resource }) {
+    if (!PolicyRuleset) {
       throw new Error('Ruleset is required');
     }
 
     this.id = id;
-    this.ruleset = ruleset;
-    this.user = user;
-    this.client = client;
-    this.group = group;
-    this.resource = resource;
+    this.PolicyRuleset = new Ruleset(ruleset);
+    this.PolicyUser = user;
+    this.PolicyGroup = group;
+    this.PolicyResource = resource.map((src) => new Resource(src));
 
     Object.freeze(this);
   }
 
-  updateRuleset(updatedRuleset) {
-    return new Policy(
-      this.id,
-      updatedRuleset,
-      this.user,
-      this.client,
-      this.group,
-      this.resource,
-    );
+  updateRuleset(ruleset) {
+    return new Policy({ ...this, ruleset });
   }
 
-  updateRule(ruleId, updatedRuleData) {
-    const updatedRuleset = this.ruleset.updateRule(ruleId, updatedRuleData);
-    return this.updateRuleset(updatedRuleset);
+  updateUser(user) {
+    return new Policy({ ...this, user });
   }
 
-  updateUser(newUser) {
-    return new Policy(
-      this.id,
-      this.ruleset,
-      newUser,
-      this.client,
-      this.group,
-      this.resource,
-    );
+  updateGroup(group) {
+    return new Policy({ ...this, group });
   }
 
-  updateClient(newClient) {
-    return new Policy(
-      this.id,
-      this.ruleset,
-      this.user,
-      newClient,
-      this.group,
-      this.resource,
-    );
+  updateResource(resource) {
+    return new Policy({ ...this, resource });
   }
 
-  updateGroup(newGroup) {
-    return new Policy(
-      this.id,
-      this.ruleset,
-      this.user,
-      this.client,
-      newGroup,
-      this.resource,
-    );
-  }
-
-  updateResource(newResource) {
-    return new Policy(
-      this.id,
-      this.ruleset,
-      this.user,
-      this.client,
-      this.group,
-      newResource,
-    );
-  }
-
-  updateId(newId) {
-    return new Policy(
-      newId,
-      this.ruleset,
-      this.user,
-      this.client,
-      this.group,
-      this.resource,
-    );
+  updateId(id) {
+    return new Policy({ ...this, id });
   }
 }
