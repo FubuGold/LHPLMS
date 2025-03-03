@@ -1,25 +1,24 @@
 import { Injectable, Dependencies } from '@nestjs/common';
 import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/infra/repos/userToken.repo';
-import { MessageService } from '@/infra/messages/message.service';
 import { UserToken } from '@/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
+import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 import bcrypt from 'bcrypt';
 
 @Injectable()
-@Dependencies(UserCredentialRepo, UserTokenRepo, MessageService, JwtService)
+@Dependencies(UserCredentialRepo, UserTokenRepo, JwtService)
 export class Authenticator {
-  constructor(UserCredentialRepo, UserTokenRepo, MessageService, JwtService) {
+  constructor(UserCredentialRepo, UserTokenRepo, JwtService) {
     this.UserCredentialRepo = UserCredentialRepo;
     this.UserTokenRepo = UserTokenRepo;
-    this.MessageService = MessageService;
     this.JwtService = JwtService;
   }
 
   async getUserByUserCredential(username, password) {
     const user = await this.MessageService.message(
-      'userService.getByUsername',
+      USER_PATTERN.GET_BY_USERNAME,
       username,
     );
     if (!user) return undefined;
@@ -34,9 +33,9 @@ export class Authenticator {
   }
   async generateToken(user) {
     const access = await this.JwtService.signAsync(user, {
-        secret: process.env['ACCESS_TOKEN'],
-        expiresIn: '3h',
-      }),
+      secret: process.env['ACCESS_TOKEN'],
+      expiresIn: '3h',
+    }),
       refresh = await this.JwtService.signAsync(user, {
         secret: process.env['REFRESH_TOKEN'],
         expiresIn: '7d',
@@ -84,7 +83,7 @@ export class Authenticator {
     });
 
     const user = await this.MessageService.message(
-      'userService.createNewUser',
+      USER_PATTERN.CREATE,
       newUser,
     );
 

@@ -15,6 +15,7 @@ import { AuthController } from './auth.controller';
     ])
   ],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [AuthService]
 })
-export class AuthModule {}
+export class AuthModule { }

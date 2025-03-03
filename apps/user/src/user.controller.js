@@ -34,7 +34,7 @@ export class UserController {
         return await this.service.getAll();
     }
 
-    @MessagePattern(USER_PATTERN.REGISTER)
+    @MessagePattern(USER_PATTERN.CREATE)
     @Bind(Payload())
     async register(payload) {
         await this.service.register(payload);

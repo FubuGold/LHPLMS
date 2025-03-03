@@ -5,17 +5,25 @@ import { AuthDomainService } from '../domain/services/auth.domain.service';
 import { Authenticator } from '../domain/aggregate/authenticate.aggregate';
 import { UserCredentialRepo } from '../infra/repos/userCredential.repo';
 import { UserTokenRepo } from '../infra/repos/userToken.repo';
-import { MessageService } from '../infra/messages/message.service';
 import { PrismaService } from '../infra/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'API_GATEWAY',
+        transport: Transport.TCP,
+        options: { port: 3000 }
+      }
+    ])
+  ],
   controllers: [AuthController],
   providers: [
     PrismaService,
     AuthService,
     AuthDomainService,
-    MessageService,
     JwtService,
     Authenticator,
     UserCredentialRepo,
@@ -23,4 +31,4 @@ import { JwtService } from '@nestjs/jwt';
   ],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }

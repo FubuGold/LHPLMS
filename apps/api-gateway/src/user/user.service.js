@@ -25,7 +25,7 @@ export class UserService {
     }
 
     async register(payload) {
-        return await this.userClient.send(USER_PATTERN.REGISTER, payload);
+        return await this.userClient.send(USER_PATTERN.CREATE, payload);
     }
 
     async delete(id) {

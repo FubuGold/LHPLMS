@@ -1,5 +1,5 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { Authenticator } from '@/modules/auth/domain/aggregate/authenticate.aggregate';
+import { Authenticator } from '../aggregate/authenticate.aggregate';
 @Injectable()
 @Dependencies(Authenticator)
 export class AuthDomainService {
