@@ -1,8 +1,8 @@
-import { Dependencies, Inject, Injectable, Bind } from '@nestjs/common';
+import { Dependencies, Inject, Injectable, Bind, forwardRef } from '@nestjs/common';
 import { AuthDomainService } from '../domain/services/auth.domain.service';
 
 @Injectable()
-@Bind(Inject('API_GATEWAY'))
+@Bind(Inject("API_GATEWAY"))
 @Dependencies(AuthDomainService)
 export class AuthService {
   constructor(userClient, AuthDomainService) {

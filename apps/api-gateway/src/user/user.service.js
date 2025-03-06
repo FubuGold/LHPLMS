@@ -9,19 +9,21 @@ export class UserService {
     }
 
     async getOne(id) {
-        return await this.userClient.send(USER_PATTERN.GET_ONE,id);
+        console.log("Api UserService got req");
+        console.log(id);
+        return await this.userClient.send(USER_PATTERN.GET_ONE, id);
     }
 
     async getAll() {
-        return await this.userClient.send(USER_PATTERN.GET_ALL,{});
+        return await this.userClient.send(USER_PATTERN.GET_ALL, {});
     }
 
     async getTask(id) {
-        return await this.userClient.send(USER_PATTERN.GET_TASK,id);
+        return await this.userClient.send(USER_PATTERN.GET_TASK, id);
     }
 
     async getSetting(id) {
-        return await this.userClient.send(USER_PATTERN.GET_SETTING,id);
+        return await this.userClient.send(USER_PATTERN.GET_SETTING, id);
     }
 
     async register(payload) {
@@ -29,15 +31,15 @@ export class UserService {
     }
 
     async delete(id) {
-        await this.userClient.send(USER_PATTERN.DELETE,id);
+        await this.userClient.send(USER_PATTERN.DELETE, id);
     }
 
-    async update(id,payload) {
-        await this.userClient.send(USER_PATTERN.UPDATE,{...payload, id: id});
+    async update(id, payload) {
+        await this.userClient.send(USER_PATTERN.UPDATE, { ...payload, id: id });
     }
 
-    async updateSetting(id,payload) {
-        await this.userClient.send(USER_PATTERN.UPDATE_SETTING,{...payload, id: id});
+    async updateSetting(id, payload) {
+        await this.userClient.send(USER_PATTERN.UPDATE_SETTING, { ...payload, id: id });
     }
 
 }

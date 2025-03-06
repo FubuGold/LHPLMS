@@ -1,6 +1,6 @@
 import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 @Controller('user')
 @Dependencies(UserService)
@@ -22,9 +22,16 @@ export class UserController {
     }
 
     @Get(':id')
-    @MessagePattern(USER_PATTERN.GET_ONE) // Need to delete. Test only.
     @Bind(Param('id'))
     async getOne(id) {
+        console.log("Got request");
+        return await this.userService.getOne(id);
+    }
+
+    @MessagePattern(USER_PATTERN.GET_ONE)
+    @Bind(Payload())
+    async getTCPOne(id) {
+        console.log("Got request");
         return await this.userService.getOne(id);
     }
 

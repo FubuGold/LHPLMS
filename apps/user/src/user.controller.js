@@ -26,6 +26,7 @@ export class UserController {
     @MessagePattern(USER_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
+        console.log("UserService got request")
         return await this.service.getOne(id);
     }
 
@@ -39,19 +40,19 @@ export class UserController {
     async register(payload) {
         await this.service.register(payload);
     }
-    
+
     @MessagePattern(USER_PATTERN.UPDATE_SETTING)
     @Bind(Payload())
     async updateSetting(payload) {
         await this.service.updateSetting(payload);
     }
-    
+
     @MessagePattern(USER_PATTERN.UPDATE)
     @Bind(Payload())
     async update(payload) {
         await this.service.update(payload);
     }
-    
+
     @MessagePattern(USER_PATTERN.DELETE)
     @Bind(Payload())
     async delete(id) {

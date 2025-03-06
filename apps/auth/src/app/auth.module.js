@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthDomainService } from '../domain/services/auth.domain.service';
@@ -15,7 +15,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       {
         name: 'API_GATEWAY',
         transport: Transport.TCP,
-        options: { port: 3000 }
+        options: { port: 3003 },
+        retryAttempts: 10,
+        retryDelay: 1000,
       }
     ])
   ],
