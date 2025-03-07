@@ -1,6 +1,6 @@
-import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body } from '@nestjs/common';
+import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body, Req, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 @Controller('user')
 @Dependencies(UserService)
@@ -24,15 +24,19 @@ export class UserController {
     @Get(':id')
     @Bind(Param('id'))
     async getOne(id) {
-        console.log("Got request");
         return await this.userService.getOne(id);
     }
 
-    @MessagePattern(USER_PATTERN.GET_ONE)
+    @MessagePattern(USER_PATTERN.GET_ONE, Transport.TCP)
     @Bind(Payload())
     async getTCPOne(id) {
-        console.log("Got request");
         return await this.userService.getOne(id);
+    }
+
+    @MessagePattern(USER_PATTERN.GET_BY_USERNAME, Transport.TCP)
+    @Bind(Payload())
+    async getByUserName(username) {
+        return await this.userService.getByUserName(username);
     }
 
     @Get()
@@ -41,9 +45,12 @@ export class UserController {
     }
 
     @Post()
-    @Bind(Body())
-    async register(payload) {
-        return await this.userService.register(payload);
+    @Bind(Body(), Res())
+    async register(payload, res) {
+        console.log('Post user received');
+        const status = await this.userService.register(payload);
+        console.log(status);
+        return res.status(201).json({ message: 'Success' });
     }
 
     @Delete(':id')

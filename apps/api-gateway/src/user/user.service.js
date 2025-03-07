@@ -9,9 +9,11 @@ export class UserService {
     }
 
     async getOne(id) {
-        console.log("Api UserService got req");
-        console.log(id);
         return await this.userClient.send(USER_PATTERN.GET_ONE, id);
+    }
+
+    async getByUsername(username) {
+        return await this.userClient.send(USER_PATTERN.GET_BY_USERNAME, username);
     }
 
     async getAll() {

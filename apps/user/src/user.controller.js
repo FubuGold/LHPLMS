@@ -17,6 +17,12 @@ export class UserController {
         return await this.service.getSetting(id);
     }
 
+    @MessagePattern(USER_PATTERN.GET_BY_USERNAME)
+    @Bind(Payload())
+    async getByUserName(username) {
+        return await this.service.getByUserName(username);
+    }
+
     @MessagePattern(USER_PATTERN.GET_TASK)
     @Bind(Payload())
     async getTask(id) {
@@ -38,6 +44,7 @@ export class UserController {
     @MessagePattern(USER_PATTERN.CREATE)
     @Bind(Payload())
     async register(payload) {
+        console.log('User controller received');
         await this.service.register(payload);
     }
 

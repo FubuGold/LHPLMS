@@ -16,10 +16,10 @@ export class UserRepo {
 
     async getOne(id) {
         try {
-            return new User( 
+            return new User(
                 await this.prisma.user.findUnique({
                     where: { id: id },
-            }));
+                }));
         }
         catch (err) {
             return undefined;
@@ -33,6 +33,19 @@ export class UserRepo {
                     where: { username: username },
                 })
             );
+        }
+        catch (err) {
+            return undefined;
+        }
+    }
+
+    async getSetting(id) {
+        try {
+            return new Setting(
+                await this.prisma.userSetting.findUnique({
+                    where: { userId: id }
+                })
+            )
         }
         catch (err) {
             return undefined;
@@ -59,8 +72,8 @@ export class UserRepo {
 
     async update(user) {
         return await this.prisma.user.update({
-            where : { id : user.id},
-            data : user
+            where: { id: user.id },
+            data: user
         })
     }
 }
