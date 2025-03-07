@@ -1,5 +1,6 @@
 import { Injectable, Inject, Bind } from '@nestjs/common';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 @Bind(Inject('USER_SERVICE'))
@@ -9,37 +10,51 @@ export class UserService {
     }
 
     async getOne(id) {
-        console.log("Api UserService got req");
-        console.log(id);
-        return await this.userClient.send(USER_PATTERN.GET_ONE, id);
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.GET_ONE, id)
+        );
     }
 
     async getAll() {
-        return await this.userClient.send(USER_PATTERN.GET_ALL, {});
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.GET_ALL, {})
+        );
     }
 
     async getTask(id) {
-        return await this.userClient.send(USER_PATTERN.GET_TASK, id);
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.GET_TASK, id)
+        );
     }
 
     async getSetting(id) {
-        return await this.userClient.send(USER_PATTERN.GET_SETTING, id);
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.GET_SETTING, id)
+        );
     }
 
     async register(payload) {
-        return await this.userClient.send(USER_PATTERN.CREATE, payload);
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.CREATE, payload)
+        );
     }
 
     async delete(id) {
-        await this.userClient.send(USER_PATTERN.DELETE, id);
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.DELETE, id)
+        );
     }
 
     async update(id, payload) {
-        await this.userClient.send(USER_PATTERN.UPDATE, { ...payload, id: id });
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.UPDATE, { ...payload, id: id })
+        );
     }
 
     async updateSetting(id, payload) {
-        await this.userClient.send(USER_PATTERN.UPDATE_SETTING, { ...payload, id: id });
+        return await lastValueFrom(
+            this.userClient.send(USER_PATTERN.UPDATE_SETTING, { ...payload, id: id })
+        );
     }
 
 }

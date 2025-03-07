@@ -10,24 +10,27 @@ export class UserRepo {
     }
 
     async getAll() {
-        let res = this.prisma.user.findMany();
-        return res;
+        return this.prisma.user.findMany();
     }
 
     async getOne(id) {
         try {
-            return new User( 
+            return new User(
                 await this.prisma.user.findUnique({
                     where: { id: id },
-            }));
+                }));
         }
         catch (err) {
-            return undefined;
+            return null;
         }
     }
 
     async getByUsername(username) {
         try {
+            const res = await this.prisma.user.findUnique({
+                where: { username: username },
+            });
+            console.log("Database fetch: ", res);
             return new User(
                 await this.prisma.user.findUnique({
                     where: { username: username },
@@ -35,19 +38,31 @@ export class UserRepo {
             );
         }
         catch (err) {
-            return undefined;
+            return null;
         }
     }
 
-    async create(user) {
+    async getSetting(id) {
         try {
-            return await this.prisma.user.create({
-                data: user,
-            });
+            return new Setting(
+                await this.prisma.userSetting.findUnique({
+                    where: { userId: id }
+                })
+            )
         }
         catch (err) {
             return null;
         }
+    }
+
+    async create(user) {
+        console.log(user);
+        console.log(await this.prisma.user.create({
+            data: user,
+        }));
+        return await this.prisma.user.create({
+            data: user,
+        });
     }
 
     async delete(user) {
@@ -59,8 +74,8 @@ export class UserRepo {
 
     async update(user) {
         return await this.prisma.user.update({
-            where : { id : user.id},
-            data : user
+            where: { id: user.id },
+            data: user
         })
     }
 }
