@@ -29,9 +29,16 @@ export class UserController {
     }
 
     @MessagePattern(USER_PATTERN.GET_ONE, Transport.TCP)
+    @MessagePattern(USER_PATTERN.GET_ONE, Transport.TCP)
     @Bind(Payload())
     async getTCPOne(unique_id) {
         return await this.userService.getOne(unique_id);
+    }
+
+    @MessagePattern(USER_PATTERN.GET_BY_USERNAME, Transport.TCP)
+    @Bind(Payload())
+    async getByUserName(username) {
+        return await this.userService.getByUserName(username);
     }
 
     @Get()

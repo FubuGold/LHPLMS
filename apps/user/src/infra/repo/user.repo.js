@@ -55,6 +55,19 @@ export class UserRepo {
         }
     }
 
+    async getSetting(id) {
+        try {
+            return new Setting(
+                await this.prisma.userSetting.findUnique({
+                    where: { userId: id }
+                })
+            )
+        }
+        catch (err) {
+            return null;
+        }
+    }
+
     async create(user) {
         console.log(user);
         console.log(await this.prisma.user.create({
