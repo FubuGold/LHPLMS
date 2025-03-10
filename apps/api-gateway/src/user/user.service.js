@@ -15,10 +15,6 @@ export class UserService {
         );
     }
 
-    async getByUsername(username) {
-        return await this.userClient.send(USER_PATTERN.GET_BY_USERNAME, username);
-    }
-
     async getAll() {
         return await lastValueFrom(
             this.userClient.send(USER_PATTERN.GET_ALL, {})

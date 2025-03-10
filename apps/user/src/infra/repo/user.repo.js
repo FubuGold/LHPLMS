@@ -13,29 +13,27 @@ export class UserRepo {
         return this.prisma.user.findMany();
     }
 
-    async getOne(id) {
+    async getId(username) {
         try {
-            return new User(
-                await this.prisma.user.findUnique({
-                    where: { id: id },
-                }));
+            return (await this.prisma.user.findUnique({
+                where: {
+                    username: username,
+                },
+                select: {
+                    id: true,
+                }
+            })).id;
         }
         catch (err) {
             return null;
         }
     }
 
-    async getByUsername(username) {
+    async getOne(id) {
         try {
-            const res = await this.prisma.user.findUnique({
-                where: { username: username },
-            });
-            console.log("Database fetch: ", res);
-            return new User(
-                await this.prisma.user.findUnique({
-                    where: { username: username },
-                })
-            );
+            return await this.prisma.user.findUnique({
+                where: { id: id }
+            })
         }
         catch (err) {
             return null;
@@ -69,18 +67,19 @@ export class UserRepo {
     }
 
     async create(user) {
-        console.log(user);
-        console.log(await this.prisma.user.create({
-            data: user,
-        }));
-        return await this.prisma.user.create({
-            data: user,
-        });
+        try {
+            return await this.prisma.user.create({
+                data: user,
+            });
+        }
+        catch (err) {
+            return null;
+        }
     }
 
-    async delete(user) {
+    async delete(id) {
         await this.prisma.user.delete({
-            where: { id: user.id }
+            where: { id: id }
         });
         return null;
     }

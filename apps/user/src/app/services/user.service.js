@@ -6,6 +6,11 @@ import { User } from '../../domain/entities/user.entity';
 import { Setting } from '../../domain/entities/setting.entity';
 import { Task } from '../../domain/entities/task.entity';
 
+
+function validateUUID(id) {
+    return id.match("[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}");
+}
+
 @Injectable()
 @Dependencies(UserRepo, UserSettingRepo, UserTaskRepo)
 export class UserService {
@@ -15,15 +20,16 @@ export class UserService {
         this.userTaskRepo = userTaskRepo;
     }
 
-    async getId(unique_id) {
-
+    async getId(id) {
+        if (validateUUID(id)) return id;
+        return await this.userRepo.getId(id);
     }
 
-    async getOne(unique_id) {
-        let res = await this.userRepo.getOne(unique_id);
-        if (res === null) res = await this.userRepo.getByUsername(unique_id);
-        console.log("getOne return: ", res);
-        return res;
+    async getOne(id) {
+        id = await this.getId(id);
+        console.log(id);
+        console.log(await this.userRepo.getOne(id));
+        return await this.userRepo.getOne(id);
     }
 
     async getAll() {
@@ -31,10 +37,12 @@ export class UserService {
     }
 
     async getSetting(id) {
+        id = await this.getId(id);
         return await this.userSettingRepo.get(id);
     }
 
     async getTask(id) {
+        id = await this.getId(id);
         return await this.userTaskRepo.get(id);
     }
 
@@ -43,14 +51,17 @@ export class UserService {
     }
 
     async update(payload) {
-        return await this.userRepo.create(new User(payload));
+        payload.id = await this.getId(payload.id);
+        return await this.userRepo.update(new User(payload));
     }
 
     async updateSetting(payload) {
+        payload.id = await this.getId(payload.id);
         return await this.userSettingRepo.update(new Setting(payload));
     }
 
     async delete(id) {
+        id = await this.getId(id);
         return await this.userRepo.delete(id);
     }
 
