@@ -220,12 +220,12 @@ model ClassPost {
 }
 
 model Assignment {
-  id         String    @id @default(uuid()) @db.Uuid
-  classId    String    @db.Uuid
-  name       String    @db.Text
-  start_time DateTime  @db.Timestamptz
-  end_time   DateTime? @db.Timestamptz()
-  is_test    Boolean   @db.Boolean
+  id        String    @id @default(uuid()) @db.Uuid
+  classId   String    @db.Uuid
+  name      String    @db.Text
+  startTime DateTime  @db.Timestamptz
+  endTime   DateTime? @db.Timestamptz()
+  isTest    Boolean   @db.Boolean
 
   class              Class                @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   AssignmentQuestion AssignmentQuestion[]
@@ -251,7 +251,7 @@ model AssignmentQuestionChoice {
   id                   String                 @id @default(uuid()) @db.Uuid
   assignmentQuestionId String                 @db.Uuid
   statement            String                 @db.Text
-  is_correct           Boolean                @default(false) @db.Boolean
+  isCorrect            Boolean                @default(false) @db.Boolean
   assignmentQuestion   AssignmentQuestion     @relation(fields: [assignmentQuestionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   UserSubmissionAnswer UserSubmissionAnswer[]
 
