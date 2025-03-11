@@ -9,12 +9,24 @@ export class PolicyRepo {
     this.prisma = PrismaService;
   }
 
-  async getPoliciesApplied(resource) {
+  async getPoliciesApplied(resource, user, group) {
     const response = await this.prisma.policy.findMany({
       where: {
         PolicyResource: {
           resourceId: resource.id,
         },
+        OR: [
+          {
+            PolicyUser: {
+              userId: user.id,
+            }
+          },
+          {
+            PolicyGroup: {
+              groupId: group.id
+            }
+          }
+        ]
       },
       select: {
         name: true,

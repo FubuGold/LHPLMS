@@ -36,14 +36,16 @@ export class Authorize {
     const resource =
       await this.ResourceRepo.getRequiredResource(requestedResourceId);
 
-    //GET policy applied to the resource
-    const policy = await this.PolicyRepo.getPoliciesApplied(resource);
+    //GET policy applied to the resource, user, or group of user
+    const policy = await this.PolicyRepo.getPoliciesApplied(resource, user, user.group);
 
     //Map HTTP method to Action, see schema
     const action = this.actionMap[req.method];
 
     //Environment attribute is the request itself
     const environment = req;
+
+    environment.requestTime = Date.now();
 
     return await firstValueFrom(
       this.HttpService.post(
