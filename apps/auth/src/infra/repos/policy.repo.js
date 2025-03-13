@@ -16,17 +16,9 @@ export class PolicyRepo {
           resourceId: resource.id,
         },
         OR: [
-          {
-            PolicyUser: {
-              userId: user.id,
-            }
-          },
-          {
-            PolicyGroup: {
-              groupId: group.id
-            }
-          }
-        ]
+          { PolicyUser: { userId: user.id } },
+          { PolicyGroup: { groupId: group.id } },
+        ],
       },
       select: {
         name: true,
