@@ -6,5 +6,5 @@ default allow = false
 
 allow if {
     can_access(input.user)
-    allow_action(input.action)
+    
 }

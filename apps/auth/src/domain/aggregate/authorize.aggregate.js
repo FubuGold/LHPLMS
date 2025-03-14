@@ -6,6 +6,9 @@ import { PolicyRepo } from '../../infra/repos/policy.repo';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
+import { USER_PATTERN } from '@app/contracts/user/user.pattern';
+
+
 @Injectable()
 @Dependencies('API_GATEWAY', ResourceRepo, PolicyRepo, HttpService)
 export class Authorize {
@@ -27,7 +30,7 @@ export class Authorize {
     const requestedResourceId = req.params.id;
 
     //GET information about user who make the request
-    const user = await this.UserClient.send('userService.getUserInfo', req.cookies);
+    const user = await this.UserClient.send(USER_PATTERN.GET_ONE, req.cookies); //<-not done
 
     // GET information about requested resource
     const resource =
@@ -42,15 +45,14 @@ export class Authorize {
     const policy = this.PolicyRepo.getPolicyApplied(resource, user, user.group)
 
     const conditionEvaluation = policy.rule.reduce(
-      async (rule, status) => status && (await firstValueFrom(
-        this.HttpService.post(`${process.env['OPA_URL']}/v1/data/${rule.conditionName}/allow`, {
+      async (condition, curr) => curr && (await firstValueFrom(
+        this.HttpService.post(`${process.env['OPA_URL']}/v1/data/${condition.conditionName}/allow`, {
           input: {
             subject: user,
             resource: resource,
-            action: action,
             environment: environment
           }
-        })).result === 'true'),
+        })).result === 'true') && condition.effect,
       true
 
     );
