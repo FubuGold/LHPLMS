@@ -1,9 +1,9 @@
-import { Injectable, Inject, Bind } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-@Bind(Inject('USER_SERVICE'))
+@Dependencies('USER_SERVICE')
 export class UserService {
     constructor(userClient) {
         this.userClient = userClient;

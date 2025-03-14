@@ -2,6 +2,7 @@ import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body, 
 import { UserService } from './user.service';
 import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { ApiBody } from '@nestjs/swagger';
 @Controller('user')
 @Dependencies(UserService)
 export class UserController {
@@ -15,10 +16,16 @@ export class UserController {
         return await this.userService.getSetting(id);
     }
 
-    @Get(':id/task')
+    @Get(':id/tasks')
     @Bind(Param('id'))
-    async getTask(id) {
+    async getAllTask(id) {
         return await this.userService.getTask(id);
+    }
+
+    @Get(':id/tasks/:taskId')
+    @Bind(Param('id'), Param('taskId'))
+    async getOneTask(id, taskId) {
+        return 'Test';
     }
 
     @Get(':id')
@@ -43,6 +50,12 @@ export class UserController {
     @Bind(Body())
     async register(payload) {
         console.log('Post user received');
+        return await this.userService.register(payload);
+    }
+
+    @MessagePattern(USER_PATTERN.CREATE, Transport.TCP)
+    @Bind(Payload())
+    async registerTCP(payload) {
         return await this.userService.register(payload);
     }
 
