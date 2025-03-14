@@ -22,18 +22,9 @@ enum Action {
 
 model Rule {
   id        String  @id @default(uuid()) @db.Uuid
+  effect    Boolean @default(false) @db.Boolean
+  conditionName String @db.String
   action    Action
-  allow     Json    @db.JsonB
-  rulesetId String  @db.Uuid
-  ruleset   Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model Ruleset {
-  id            String          @id @default(uuid()) @db.Uuid
-  name          String          @db.Text
-  description   String?         @db.Text
-  PolicyRuleset PolicyRuleset[]
-  Rule          Rule[]
 }
 
 model Resource {
@@ -58,13 +49,13 @@ model Policy {
 }
 
 model PolicyRuleset {
-  policyId  String @db.Uuid
-  rulesetId String @db.Uuid
+  policyId  String @db.uuid
+  ruleId String @db.uuid
 
   policy  Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ruleset Ruleset @relation(fields: [rulesetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rule Rule @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([policyId, rulesetId])
+  @@id([policyId, ruleId])
 }
 
 model PolicyResource {

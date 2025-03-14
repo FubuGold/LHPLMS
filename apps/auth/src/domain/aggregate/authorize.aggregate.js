@@ -2,16 +2,16 @@ import { Injectable, Dependencies, Bind, Inject } from '@nestjs/common';
 
 import { ResourceRepo } from '../../infra/repos/resource.repo';
 import { PolicyRepo } from '../../infra/repos/policy.repo';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
-@Injectable
-@Bind(Inject('API_GATEWAY'))
-@Dependencies(ResourceRepo, PolicyRepo)
+@Injectable()
+@Dependencies('API_GATEWAY', ResourceRepo, PolicyRepo, HttpService)
 export class Authorize {
-  constructor(UserClient, ResourceRepo, PolicyRepo, MessageService) {
+  constructor(UserClient, ResourceRepo, PolicyRepo, HttpService) {
     this.UserClient = UserClient;
     this.ResourceRepo = ResourceRepo;
     this.PolicyRepo = PolicyRepo;
-    this.MessageService = MessageService;
     this.HttpService = HttpService;
     this.actionMap = {
       GET: 'READ',
@@ -22,11 +22,11 @@ export class Authorize {
     };
   }
 
-  async authorize(req, user) {
+  async authorize(req) {
     const requestedResourceId = req.params.id;
 
     //GET information about user who make the request
-    const user = await this.UserClient.send('userService.getUserInfo', user);
+    const user = await this.UserClient.send('userService.getUserInfo', req.cookies);
 
     // GET information about requested resource
     const resource =
@@ -38,20 +38,20 @@ export class Authorize {
     //Environment attribute is the request itself
     const environment = { ...req, requestTime: Date.now() };
 
-    return await this.parseRule({
-      subject: user,
-      action: action,
-      resource: resource,
-      environment: environment,
-    });
-  }
+    const policy = this.PolicyRepo.getPolicyApplied(resource, user, user.group)
 
-  async parseRule(input) {
-    //GET policy applied to the resource, user, or group of user
-    const policy = await this.PolicyRepo.getPoliciesApplied(
-      input.resource,
-      input.user,
-      input.user.group,
+    const conditionEvaluation = policy.rule.reduce(
+      async (rule, status) => status && (await firstValueFrom(
+        this.HttpService.post(`${process.env['OPA_URL']}/v1/data/${rule.conditionName}/allow`, {
+          input: {
+            subject: user,
+            resource: resource,
+            action: action,
+            environment: environment
+          }
+        })).result === 'true'),
+      true
+
     );
   }
 }

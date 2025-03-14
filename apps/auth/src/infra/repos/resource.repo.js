@@ -22,13 +22,7 @@ export class ResourceRepo {
       select: {
         id: true,
         ownerId: true,
-        PolicyResource: { select: { policyId: true } },
-        Class: {
-          select: {
-            id: true,
-            UserClass: { select: { userId: true } },
-          },
-        },
+        Class: { select: { id: true } },
         ClassPost: { select: { id: true } },
         Assignment: { select: { id: true } },
         QuestionBank: { select: { id: true } },

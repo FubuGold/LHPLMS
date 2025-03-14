@@ -21,29 +21,23 @@ export class PolicyRepo {
         ],
       },
       select: {
-        name: true,
+        id: true,
         PolicyRuleset: { select: { ruleset: { select: { Rule: true } } } },
         PolicyUser: { select: { user: { select: { id: true } } } },
         PolicyGroup: { select: { group: { select: { id: true } } } },
         PolicyResource: {
-          select: {
-            resource: {
-              select: {
-                id: true,
-                ownerId: true,
-                PolicyResource: { select: { policyId: true } },
-                Class: { select: { id: true } },
-                ClassPost: { select: { id: true } },
-                Assignment: { select: { id: true } },
-                QuestionBank: { select: { id: true } },
-              },
-            },
-          },
+          select: { resource: { select: { id: true, }, }, },
         },
       },
     });
 
-    response.map((item) => new Policy({ ...item }));
+    response.map((item) => new Policy({
+      id: item.id,
+      ruleset: item.PolicyRuleset.ruleset,
+      user: item.PolicyUser.user,
+      group: item.PolicyGroup.group,
+      resource: item.PolicyResource.resource
+    }));
 
     return response;
   }
