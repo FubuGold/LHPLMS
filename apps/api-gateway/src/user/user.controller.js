@@ -1,7 +1,8 @@
-import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body } from '@nestjs/common';
+import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body, Req, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { ApiBody } from '@nestjs/swagger';
 @Controller('user')
 @Dependencies(UserService)
 export class UserController {
@@ -15,23 +16,28 @@ export class UserController {
         return await this.userService.getSetting(id);
     }
 
-    @Get(':id/task')
+    @Get(':id/tasks')
     @Bind(Param('id'))
-    async getTask(id) {
+    async getAllTask(id) {
         return await this.userService.getTask(id);
+    }
+
+    @Get(':id/tasks/:taskId')
+    @Bind(Param('id'), Param('taskId'))
+    async getOneTask(id, taskId) {
+        return 'Test';
     }
 
     @Get(':id')
     @Bind(Param('id'))
     async getOne(id) {
-        console.log("Got request");
-        return await this.userService.getOne(id);
+        const status = await this.userService.getOne(id);
+        return status;
     }
 
-    @MessagePattern(USER_PATTERN.GET_ONE)
+    @MessagePattern(USER_PATTERN.GET_ONE, Transport.TCP)
     @Bind(Payload())
     async getTCPOne(id) {
-        console.log("Got request");
         return await this.userService.getOne(id);
     }
 
@@ -43,6 +49,13 @@ export class UserController {
     @Post()
     @Bind(Body())
     async register(payload) {
+        console.log('Post user received');
+        return await this.userService.register(payload);
+    }
+
+    @MessagePattern(USER_PATTERN.CREATE, Transport.TCP)
+    @Bind(Payload())
+    async registerTCP(payload) {
         return await this.userService.register(payload);
     }
 

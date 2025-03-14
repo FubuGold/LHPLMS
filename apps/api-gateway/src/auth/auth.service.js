@@ -1,9 +1,9 @@
-import { Injectable, Inject, Bind, Post, Body, Res } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
 import { AUTH_PATTERN } from '@app/contracts/auth/auth.pattern'
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-@Bind(Inject('AUTH_SERVICE'))
+@Dependencies('AUTH_SERVICE')
 export class AuthService {
     constructor(authClient) {
         this.authClient = authClient;
@@ -19,7 +19,7 @@ export class AuthService {
         );
     }
 
-    async register(name, username, dob, avatar, password) {
+    async register(name, username, dob, avatar, password, confirmPassword) {
         const res = await lastValueFrom(
             this.authClient.send(
                 AUTH_PATTERN.REGISTER,
@@ -28,7 +28,8 @@ export class AuthService {
                     username,
                     dob,
                     avatar,
-                    password
+                    password,
+                    confirmPassword
                 }
             ));
 

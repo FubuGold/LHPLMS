@@ -28,7 +28,7 @@ export class AuthController {
       payload.dob,
       payload.avatar,
       payload.password,
-      payload.password,
+      payload.confirmPassword,
     );
   }
 
