@@ -8,7 +8,6 @@ import { HttpService } from '@nestjs/axios';
 
 import { USER_PATTERN } from '@app/contracts/user/user.pattern';
 
-
 @Injectable()
 @Dependencies('API_GATEWAY', ResourceRepo, PolicyRepo, HttpService)
 export class Authorize {
@@ -42,19 +41,23 @@ export class Authorize {
     //Environment attribute is the request itself
     const environment = { ...req, requestTime: Date.now() };
 
-    const policy = this.PolicyRepo.getPolicyApplied(resource, user, user.group)
+    //Get policy applied to action, user, and resource
+    const rule = await this.PolicyRepo.get(resource, user, action);
 
-    const conditionEvaluation = policy.rule.reduce(
-      async (condition, curr) => curr && (await firstValueFrom(
-        this.HttpService.post(`${process.env['OPA_URL']}/v1/data/${condition.conditionName}/allow`, {
-          input: {
-            subject: user,
-            resource: resource,
-            environment: environment
-          }
-        })).result === 'true') && condition.effect,
-      true
+    const conditionEvaluation =
+      (await firstValueFrom(
+        this.HttpService.post(
+          `${process.env['OPA_URL']}/v1/data/${condition.conditionName}/allow`,
+          {
+            input: {
+              subject: user,
+              resource: resource,
+              environment: environment,
+            },
+          },
+        ),
+      ).result) === 'true';
 
-    );
+    return conditionEvaluation;
   }
 }

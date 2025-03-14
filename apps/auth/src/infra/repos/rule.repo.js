@@ -15,9 +15,10 @@ export class RuleRepo {
     });
   }
 
-  async get(where) {
+  async get(where, select) {
     const response = await this.prisma.rule.findMany({
       where: where,
+      select: select,
     });
 
     response.map((item) => new Rule({ ...item }));

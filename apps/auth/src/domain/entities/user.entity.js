@@ -5,6 +5,7 @@ export class User {
     this.username = obj.username;
     this.dob = obj.dob;
     this.avatar = obj.avatar;
+    this.group = obj.group;
     Object.freeze(this);
   }
 }

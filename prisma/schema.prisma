@@ -21,10 +21,11 @@ enum Action {
 }
 
 model Rule {
-  id        String  @id @default(uuid()) @db.Uuid
-  effect    Boolean @default(false) @db.Boolean
-  conditionName String @db.String
-  action    Action
+  id            String        @id @default(uuid()) @db.Uuid
+  effect        Boolean       @default(false) @db.Boolean
+  conditionName String        @db.Text
+  action        Action
+  PolicyRules   PolicyRules[]
 }
 
 model Resource {
@@ -42,18 +43,18 @@ model Policy {
   id             String           @id @default(uuid()) @db.Uuid
   name           String           @db.Text
   description    String?          @db.Text
-  PolicyRuleset  PolicyRuleset[]
+  PolicyRules    PolicyRules[]
   PolicyResource PolicyResource[]
   PolicyUser     PolicyUser[]
   PolicyGroup    PolicyGroup[]
 }
 
-model PolicyRuleset {
-  policyId  String @db.uuid
-  ruleId String @db.uuid
+model PolicyRules {
+  policyId String @db.Uuid
+  ruleId   String @db.Uuid
 
-  policy  Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  rule Rule @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  policy Policy @relation(fields: [policyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rule   Rule   @relation(fields: [ruleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([policyId, ruleId])
 }

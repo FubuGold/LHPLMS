@@ -1,7 +1,8 @@
 export class Rule {
-  constructor({ id, action, name, description }) {
+  constructor({ id, action, conditionName, name, description }) {
     this.id = id;
     this.action = action;
+    this.conditionName = conditionName;
     this.description = description;
     this.name = name;
 
@@ -10,6 +11,10 @@ export class Rule {
 
   updateId(newId) {
     return new Rule({ ...this, id: newId });
+  }
+
+  updateConditionName(newConditionName) {
+    return new Rule({ ...this, ConditionName: newConditionName });
   }
 
   updateAction(newAction) {

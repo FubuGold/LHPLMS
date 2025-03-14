@@ -9,35 +9,32 @@ export class PolicyRepo {
     this.prisma = PrismaService;
   }
 
-  async getPoliciesApplied(resource, user, group) {
+  async get(where, select) {
     const response = await this.prisma.policy.findMany({
-      where: {
-        PolicyResource: {
-          resourceId: resource.id,
-        },
-        OR: [
-          { PolicyUser: { userId: user.id } },
-          { PolicyGroup: { groupId: group.id } },
-        ],
-      },
-      select: {
-        id: true,
-        PolicyRuleset: { select: { ruleset: { select: { Rule: true } } } },
-        PolicyUser: { select: { user: { select: { id: true } } } },
-        PolicyGroup: { select: { group: { select: { id: true } } } },
-        PolicyResource: {
-          select: { resource: { select: { id: true, }, }, },
-        },
-      },
+      where: where,
+      select: select,
     });
 
-    response.map((item) => new Policy({
-      id: item.id,
-      ruleset: item.PolicyRuleset.ruleset,
-      user: item.PolicyUser.user,
-      group: item.PolicyGroup.group,
-      resource: item.PolicyResource.resource
-    }));
+    return response;
+  }
+
+  async getPoliciesApplied(resource, user, action) {
+    const response = await this.get({
+      PolicyResource: { id: resource.id },
+      OR: [
+        { PolicyUser: { id: user.id } },
+        { PolicyGroup: { in: user.group } },
+        { PolicyRules: { action: action } },
+      ],
+    });
+
+    response.map(
+      (item) =>
+        new Policy({
+          id: item.id,
+          rules: item.PolicyRules.rule,
+        }),
+    );
 
     return response;
   }
