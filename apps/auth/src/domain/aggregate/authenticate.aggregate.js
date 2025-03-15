@@ -1,4 +1,4 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import { Injectable, Dependencies, Bind, Inject } from '@nestjs/common';
 import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
@@ -6,21 +6,22 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
 import { USER_PATTERN } from '@app/contracts/user/user.pattern'
 import bcrypt from 'bcrypt';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-@Dependencies(UserCredentialRepo, UserTokenRepo, JwtService)
+@Dependencies('API_GATEWAY', UserCredentialRepo, UserTokenRepo, JwtService)
 export class Authenticator {
-  constructor(UserCredentialRepo, UserTokenRepo, JwtService) {
+  constructor(userClient, UserCredentialRepo, UserTokenRepo, JwtService) {
+    this.userClient = userClient;
     this.UserCredentialRepo = UserCredentialRepo;
     this.UserTokenRepo = UserTokenRepo;
     this.JwtService = JwtService;
   }
 
   async getUserByUserCredential(username, password) {
-    const user = await this.MessageService.message(
-      USER_PATTERN.GET_BY_USERNAME,
-      username,
-    );
+
+    const user = await lastValueFrom(this.userClient.send(USER_PATTERN.GET_ONE, username));
+
     if (!user) return undefined;
 
     const credential = await this.UserCredentialRepo.getByUserId(user.id);
@@ -74,7 +75,7 @@ export class Authenticator {
     return await this.generateToken(user);
   }
 
-  async register(name, username, dob, avatar, password) {
+  async register(name, username, dob, avatar, password, confirmPassword) {
     const newUser = new User({
       name: name,
       username: username,
@@ -82,14 +83,13 @@ export class Authenticator {
       avatar: avatar,
     });
 
-    const user = await this.MessageService.message(
-      USER_PATTERN.CREATE,
-      newUser,
-    );
+    const user = await lastValueFrom(this.userClient.send(USER_PATTERN.CREATE, newUser));
 
     if (!user) throw new Error(`User with ${username} already exists`);
 
-    await registerNewUserCredential(user, password);
+    console.log(user);
+
+    await this.registerNewUserCredential(user, password);
 
     return true;
   }

@@ -9,14 +9,17 @@ export class UserTaskRepo {
         this.prisma = prismaService;
     }
 
-    async getAll(id) {
+    async getAll(userId) {
         let res = await this.prisma.findMany({
-                where: {
-                    id: id
-                }
-            });
+            where: {
+                userId: userId
+            },
+            // include: {
+            //     assignment: true
+            // }
+        });
         res.forEach(element => {
-            element = new Task(element.endTime);
+            element = new Task(element);
         });
         return res;
     }

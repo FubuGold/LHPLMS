@@ -10,32 +10,59 @@ export class UserRepo {
     }
 
     async getAll() {
-        let res = this.prisma.user.findMany();
-        return res;
+        return this.prisma.user.findMany();
+    }
+
+    async getId(username) {
+        try {
+            return (await this.prisma.user.findUnique({
+                where: {
+                    username: username,
+                },
+                select: {
+                    id: true,
+                }
+            })).id;
+        }
+        catch (err) {
+            return null;
+        }
     }
 
     async getOne(id) {
         try {
-            return new User( 
-                await this.prisma.user.findUnique({
-                    where: { id: id },
-            }));
+            return await this.prisma.user.findUnique({
+                where: { id: id }
+            })
         }
         catch (err) {
-            return undefined;
+            return null;
         }
     }
 
-    async getByUsername(username) {
+    async getSetting(id) {
         try {
-            return new User(
-                await this.prisma.user.findUnique({
-                    where: { username: username },
+            return new Setting(
+                await this.prisma.userSetting.findUnique({
+                    where: { userId: id }
                 })
-            );
+            )
         }
         catch (err) {
-            return undefined;
+            return null;
+        }
+    }
+
+    async getSetting(id) {
+        try {
+            return new Setting(
+                await this.prisma.userSetting.findUnique({
+                    where: { userId: id }
+                })
+            )
+        }
+        catch (err) {
+            return null;
         }
     }
 
@@ -50,17 +77,17 @@ export class UserRepo {
         }
     }
 
-    async delete(user) {
+    async delete(id) {
         await this.prisma.user.delete({
-            where: { id: user.id }
+            where: { id: id }
         });
         return null;
     }
 
     async update(user) {
         return await this.prisma.user.update({
-            where : { id : user.id},
-            data : user
+            where: { id: user.id },
+            data: user
         })
     }
 }

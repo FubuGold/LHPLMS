@@ -40,14 +40,14 @@ export class AppController {
         Body('confirmPassword'),
         Res(),
     )
-    async register(name, username, dob, avatar, password, res) {
+    async register(name, username, dob, avatar, password, confirmPassword, res) {
         const succeeded = await this.authService.register(
             name,
             username,
             dob,
             avatar,
             password,
-            password,
+            confirmPassword,
         );
         // console.log(succeeded);
 

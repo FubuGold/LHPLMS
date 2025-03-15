@@ -1,12 +1,11 @@
-import { Injectable, Dependencies, Bind, Inject } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
 import { ResourceRepo } from '../../infra/repos/resource.repo';
 import { PolicyRepo } from '../../infra/repos/policy.repo';
 
 @Injectable
-@Bind(Inject('API_GATEWAY'))
-@Dependencies(ResourceRepo, PolicyRepo)
+@Dependencies('API_GATEWAY', ResourceRepo, PolicyRepo)
 export class Authorize {
   constructor(UserClient, ResourceRepo, PolicyRepo, MessageService) {
     this.UserClient = UserClient;
