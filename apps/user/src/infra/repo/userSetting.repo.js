@@ -9,21 +9,23 @@ export class UserSettingRepo {
         this.prisma = prismaService;
     }
 
-    async updateSingleSetting(payload) {
-        await this.prisma.upsert({
-            where: { id: payload.id },
+    async update(payload) {
+        console.log(payload);
+        return await this.prisma.userSetting.upsert({
+            where: { userId: payload.userId },
             update: { ...payload },
             create: { ...payload }
         })
     }
 
-    async getUserSetting(userId) {
+    async get(userId) {
         try {
-            let res = new Setting(await this.prisma.findMany({
+            let res = new Setting(await this.prisma.userSetting.findUnique({
                 where: {
                     userId: userId
                 }
             }));
+            console.log(res);
             return res;
         }
         catch (err) {

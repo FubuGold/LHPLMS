@@ -47,13 +47,13 @@ export class UserService {
 
     async update(id, payload) {
         return await lastValueFrom(
-            this.userClient.send(USER_PATTERN.UPDATE, { ...payload, id: id })
+            this.userClient.send(USER_PATTERN.UPDATE, { ...payload, userId: id })
         );
     }
 
     async updateSetting(id, payload) {
         return await lastValueFrom(
-            this.userClient.send(USER_PATTERN.UPDATE_SETTING, { ...payload, id: id })
+            this.userClient.send(USER_PATTERN.UPDATE_SETTING, { ...payload, userId: id })
         );
     }
 

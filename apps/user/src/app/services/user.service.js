@@ -27,8 +27,6 @@ export class UserService {
 
     async getOne(id) {
         id = await this.getId(id);
-        console.log(id);
-        console.log(await this.userRepo.getOne(id));
         return await this.userRepo.getOne(id);
     }
 
@@ -51,12 +49,12 @@ export class UserService {
     }
 
     async update(payload) {
-        payload.id = await this.getId(payload.id);
+        payload.userId = await this.getId(payload.userId);
         return await this.userRepo.update(new User(payload));
     }
 
     async updateSetting(payload) {
-        payload.id = await this.getId(payload.id);
+        payload.userId = await this.getId(payload.userId);
         return await this.userSettingRepo.update(new Setting(payload));
     }
 

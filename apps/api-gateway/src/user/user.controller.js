@@ -49,7 +49,6 @@ export class UserController {
     @Post()
     @Bind(Body())
     async register(payload) {
-        console.log('Post user received');
         return await this.userService.register(payload);
     }
 
