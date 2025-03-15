@@ -1,7 +1,14 @@
 {
-  "presets": ["@babel/preset-env"],
+  "presets": [
+    "@babel/preset-env"
+  ],
   "plugins": [
-    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
     [
       "@babel/plugin-transform-runtime",
       {
@@ -11,11 +18,13 @@
     [
       "module-resolver",
       {
-        "root": ["./src"],
+        "root": [
+          "./src"
+        ],
         "alias": {
           "@": "./src",
-          "@app/contracts": "../../libs/contracts/src",
-          "@app/contracts/*": "../../libs/contracts/src/*"
+          "@app/lib/contracts": "../../libs/contracts/src",
+          "@app/lib/contracts/*": "../../libs/contracts/src/*"
         }
       }
     ]

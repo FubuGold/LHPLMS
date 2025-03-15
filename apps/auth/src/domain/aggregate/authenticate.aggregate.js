@@ -4,7 +4,7 @@ import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
-import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
 import bcrypt from 'bcrypt';
 import { lastValueFrom } from 'rxjs';
 

@@ -1,5 +1,5 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()

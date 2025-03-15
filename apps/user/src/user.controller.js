@@ -1,6 +1,6 @@
 import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
 
 import { UserService } from './app/services/user.service';
 

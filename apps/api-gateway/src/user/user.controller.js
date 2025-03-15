@@ -1,7 +1,7 @@
 import { Controller, Dependencies, Get, Post, Delete, Patch, Param, Bind, Body, Req, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
-import { USER_PATTERN } from '@app/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
 import { ApiBody } from '@nestjs/swagger';
 @Controller('user')
 @Dependencies(UserService)

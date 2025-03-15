@@ -1,6 +1,6 @@
 import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AUTH_PATTERN } from '@app/contracts/auth/auth.pattern'
+import { AUTH_PATTERN } from '@app/lib/contracts/auth/auth.pattern'
 import { AuthService } from './auth.service';
 
 @Controller()
