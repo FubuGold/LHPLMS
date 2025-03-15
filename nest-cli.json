@@ -21,6 +21,15 @@
         "tsConfigPath": "apps/api-gateway/jsconfig.json"
       }
     },
+    "assignment": {
+      "type": "application",
+      "root": "apps/assignment",
+      "entryFile": "main",
+      "sourceRoot": "apps/assignment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/assignment/jsconfig.json"
+      }
+    },
     "auth": {
       "type": "application",
       "root": "apps/auth",
@@ -38,6 +47,51 @@
       "sourceRoot": "libs/contracts/src",
       "compilerOptions": {
         "tsConfigPath": "libs/contracts/tsconfig.lib.json"
+      }
+    },
+    "group": {
+      "type": "application",
+      "root": "apps/group",
+      "entryFile": "main",
+      "sourceRoot": "apps/group/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/group/jsconfig.json"
+      }
+    },
+    "post": {
+      "type": "application",
+      "root": "apps/post",
+      "entryFile": "main",
+      "sourceRoot": "apps/post/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/post/jsconfig.json"
+      }
+    },
+    "question-bank": {
+      "type": "application",
+      "root": "apps/question-bank",
+      "entryFile": "main",
+      "sourceRoot": "apps/question-bank/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/question-bank/jsconfig.json"
+      }
+    },
+    "subject": {
+      "type": "application",
+      "root": "apps/subject",
+      "entryFile": "main",
+      "sourceRoot": "apps/subject/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/subject/jsconfig.json"
+      }
+    },
+    "submission": {
+      "type": "application",
+      "root": "apps/submission",
+      "entryFile": "main",
+      "sourceRoot": "apps/submission/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/submission/jsconfig.json"
       }
     },
     "user": {
