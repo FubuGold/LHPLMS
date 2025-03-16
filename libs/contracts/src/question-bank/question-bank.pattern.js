@@ -1,12 +1,21 @@
-export const QUESTION_BANK_PATTERN = {
-    GET_ALL: "questionBank.getAll",
-    GET_ONE: "questionBank.getOne",
-    GET_ALL_QUESTION: "questionBank.question.getAll",
-    GET_ONE_QUESTION: "questionBank.question.getOne",
-    CREATE: "questionBank.create",
-    CREATE_QUESTION: "questionBank.question.create",
-    UPDATE: "questionBank.update",
-    UPDATE_QUESTION: "questionBank.question.update",
-    DELETE: "questionBank.delete",
-    DELETE_QUESTION: "questionBank.question.delete"
-}
+const name = 'questionBank';
+
+const action = {
+  GET_ALL: 'getAll',
+  GET_ONE: 'getOne',
+  CREATE: 'create',
+  UPDATE: 'update',
+  DELETE: 'delete',
+  GET_ALL_QUESTION: 'question.getAll',
+  GET_ONE_QUESTION: 'question.getOne',
+  CREATE_QUESTION: 'question.create',
+  UPDATE_QUESTION: 'question.update',
+  DELETE_QUESTION: 'question.delete',
+  GENERAL: '*',
+};
+
+const PATTERN = Object.entries(action)
+  .map((item) => ({ [item[0]]: `${name}.${item[1]}` }))
+  .reduce((prev, curr) => ({ ...prev, ...curr }), {});
+
+module.exports = { PATTERN };
