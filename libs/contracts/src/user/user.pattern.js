@@ -13,8 +13,8 @@ const action = {
   GENERAL: '*',
 };
 
-const PATTERN = Object.entries(action)
+const USER_PATTERN = Object.entries(action)
   .map((item) => ({ [item[0]]: `${name}.${item[1]}` }))
   .reduce((prev, curr) => ({ ...prev, ...curr }), {});
 
-module.exports = { PATTERN };
+module.exports = { USER_PATTERN };
