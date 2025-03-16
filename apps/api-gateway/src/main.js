@@ -13,7 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.connectMicroservice({
     transport: Transport.TCP,
-    options: { port: 3010 },
+    options: { port: 3002 },
   });
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
