@@ -1,6 +1,6 @@
 import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AUTH_PATTERN } from '@app/lib/contracts/auth/auth.pattern'
+import { PATTERN } from '@app/lib/contracts/auth/auth.pattern'
 import { AuthService } from './auth.service';
 
 @Controller()
@@ -10,7 +10,7 @@ export class AuthController {
     this.AuthService = AuthService;
   }
 
-  @MessagePattern(AUTH_PATTERN.LOGIN)
+  @MessagePattern(PATTERN.LOGIN)
   @Bind(Payload())
   async login(payload) {
     return await this.AuthService.login(
@@ -19,7 +19,7 @@ export class AuthController {
     );
   }
 
-  @MessagePattern(AUTH_PATTERN.REGISTER)
+  @MessagePattern(PATTERN.REGISTER)
   @Bind(Payload())
   async register(payload) {
     return await this.AuthService.register(

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../../domain/services/user.service';
 import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
-import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
+import { PATTERN } from '@app/lib/contracts/user/user.pattern';
 @Controller('user')
 @Dependencies(UserService)
 export class UserController {
@@ -43,7 +43,7 @@ export class UserController {
     return await this.userService.getOne(id);
   }
 
-  @MessagePattern(USER_PATTERN.GET_ONE, Transport.TCP)
+  @MessagePattern(PATTERN.GET_ONE, Transport.TCP)
   @Bind(Payload())
   async getTCPOne(id) {
     return await this.userService.getOne(id);
@@ -60,7 +60,7 @@ export class UserController {
     return await this.userService.register(payload);
   }
 
-  @MessagePattern(USER_PATTERN.CREATE, Transport.TCP)
+  @MessagePattern(PATTERN.CREATE, Transport.TCP)
   @Bind(Payload())
   async registerTCP(payload) {
     return await this.userService.register(payload);
