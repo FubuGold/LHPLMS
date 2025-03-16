@@ -1,8 +1,7 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from '../../domain/services/auth.service';
 
 @Module({
   imports: [
@@ -13,11 +12,10 @@ import { AuthController } from './auth.controller';
         options: { port: 3002 },
         retryAttempts: 10,
         retryDelay: 1000,
-      }
-    ])
+      },
+    ]),
   ],
   providers: [AuthService],
-  controllers: [AuthController],
-  exports: [AuthService]
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}
