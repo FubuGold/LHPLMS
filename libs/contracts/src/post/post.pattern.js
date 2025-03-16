@@ -1,7 +1,16 @@
-export const POST_PATTERN = {
-    CREATE: "post.create",
-    UPDATE: "post.update",
-    DELETE: "post.delete",
-    GET_ONE: "post.getOne",
-    GET_ALL: "post.getAll"
-}
+const name = 'post';
+
+const action = {
+  CREATE: 'create',
+  UPDATE: 'update',
+  DELETE: 'delete',
+  GET_ONE: 'getOne',
+  GET_ALL: 'getAll',
+  GENERAL: '*',
+};
+
+const PATTERN = Object.entries(action)
+  .map((item) => ({ [item[0]]: `${name}.${item[1]}` }))
+  .reduce((prev, curr) => ({ ...prev, ...curr }), {});
+
+module.exports = { PATTERN };

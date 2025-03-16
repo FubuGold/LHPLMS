@@ -1,9 +1,18 @@
-export const GROUP_PATTERN = {
-    CREATE: "group.create",
-    UPDATE: "group.update",
-    DELETE: "group.delete",
-    GET_ONE: "group.getOne",
-    GET_ALL: "group.getAll",
-    ADD_USER: "group.addUser",
-    DELETE_USER: "group.deleteUser"
-}
+const name = 'group';
+
+const action = {
+  CREATE: 'create',
+  UPDATE: 'update',
+  DELETE: 'delete',
+  GET_ONE: 'getOne',
+  GET_ALL: 'getAll',
+  ADD_USER: 'addUser',
+  DELETE_USER: 'deleteUser',
+  GENERAL: '*',
+};
+
+const PATTERN = Object.entries(action)
+  .map((item) => ({ [item[0]]: `${name}.${item[1]}` }))
+  .reduce((prev, curr) => ({ ...prev, ...curr }), {});
+
+module.exports = { PATTERN };

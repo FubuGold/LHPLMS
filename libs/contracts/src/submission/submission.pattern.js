@@ -1,6 +1,15 @@
-export const SUBMISSION_PATTERN = {
-    CREATE: "submission.create",
-    DELETE: "submission.delete",
-    GET_ONE: "submission.getOne",
-    GET_ALL: "submission.getAll"
-}
+const name = 'submission';
+
+const action = {
+  CREATE: 'create',
+  DELETE: 'delete',
+  GET_ONE: 'getOne',
+  GET_ALL: 'getAll',
+  GENERAL: '*',
+};
+
+const PATTERN = Object.entries(action)
+  .map((item) => ({ [item[0]]: `${name}.${item[1]}` }))
+  .reduce((prev, curr) => ({ ...prev, ...curr }), {});
+
+module.exports = { PATTERN };

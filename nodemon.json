@@ -1,5 +1,5 @@
 {
-  "watch": ["apps"],
+  "watch": ["apps", "libs"],
   "ext": "js",
   "ignore": ["src/**/*.spec.js"],
   "exec": "node index --exec babel-node"
