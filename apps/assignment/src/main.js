@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AuthModule } from './assignment.module';
+import { AssignmentModule } from './assignment.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AuthModule, {
+  const app = await NestFactory.createMicroservice(AssignmentModule, {
     transport: Transport.TCP,
     options: { port: 3003 }
   });
