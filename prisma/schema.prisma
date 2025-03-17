@@ -203,6 +203,7 @@ model Subject {
 
 model Class {
   id              String       @id @default(uuid()) @db.Uuid
+  name            String       @db.Text
   subjectId       String       @db.Uuid
   resourceId      String       @db.Uuid
   backgroundImage String       @db.Text
