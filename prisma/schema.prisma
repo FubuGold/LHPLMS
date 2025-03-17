@@ -224,27 +224,28 @@ model ClassPost {
 }
 
 model Assignment {
-  id        String    @id @default(uuid()) @db.Uuid
-  classId   String    @db.Uuid
-  name      String    @db.Text
-  startTime DateTime  @db.Timestamptz
-  endTime   DateTime? @db.Timestamptz()
-  isTest    Boolean   @db.Boolean
+  id         String    @id @default(uuid()) @db.Uuid
+  classId    String    @db.Uuid
+  name       String    @db.Text
+  startTime  DateTime  @db.Timestamptz
+  endTime    DateTime? @db.Timestamptz()
+  isTest     Boolean   @db.Boolean
+  resourceId String    @db.Uuid
 
   class              Class                @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   AssignmentQuestion AssignmentQuestion[]
   UserTask           UserTask[]
-  resourceId         String               @db.Uuid
   resource           Resource             @relation(fields: [resourceId], references: [id])
 }
 
 model AssignmentQuestion {
   id           String @id @default(uuid()) @db.Uuid
   assignmentId String @db.Uuid
+  origin       String @db.Uuid
   statement    String @db.Text
-  origin       String @db.Text
 
   assignment               Assignment                 @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  question                 Question                   @relation(fields: [origin], references: [id])
   AssignmentQuestionChoice AssignmentQuestionChoice[]
   UserSubmissionAnswer     UserSubmissionAnswer[]
 
@@ -276,10 +277,11 @@ model QuestionBank {
 }
 
 model Question {
-  id             String           @id @default(uuid()) @db.Uuid
-  questionBankId String           @db.Uuid
-  questionBank   QuestionBank     @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  QuestionChoice QuestionChoice[]
+  id                 String               @id @default(uuid()) @db.Uuid
+  questionBankId     String               @db.Uuid
+  questionBank       QuestionBank         @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  QuestionChoice     QuestionChoice[]
+  AssignmentQuestion AssignmentQuestion[]
 
   @@index([questionBankId])
 }
