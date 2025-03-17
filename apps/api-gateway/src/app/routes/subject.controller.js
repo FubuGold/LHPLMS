@@ -1,4 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Dependencies } from '@nestjs/common';
+import { SubjectService } from '../../domain/services/subject.service';
 
 @Controller('subject')
-export class SubjectController {}
+@Dependencies(SubjectService)
+export class SubjectController {
+
+}

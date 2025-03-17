@@ -1,6 +1,6 @@
 import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { PATTERN } from '@app/lib/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
 
 import { UserService } from './app/services/user.service';
 
@@ -11,50 +11,50 @@ export class UserController {
         this.service = userService;
     }
 
-    @MessagePattern(PATTERN.GET_SETTING)
+    @MessagePattern(USER_PATTERN.GET_SETTING)
     @Bind(Payload())
     async getSetting(id) {
         return await this.service.getSetting(id);
     }
 
-    @MessagePattern(PATTERN.GET_TASK)
+    @MessagePattern(USER_PATTERN.GET_TASK)
     @Bind(Payload())
     async getTask(id) {
         return await this.service.getTask(id);
     }
 
-    @MessagePattern(PATTERN.GET_ONE)
+    @MessagePattern(USER_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
         console.log("UserService got getOne")
         return await this.service.getOne(id);
     }
 
-    @MessagePattern(PATTERN.GET_ALL)
+    @MessagePattern(USER_PATTERN.GET_ALL)
     async getAll() {
         return await this.service.getAll();
     }
 
-    @MessagePattern(PATTERN.CREATE)
+    @MessagePattern(USER_PATTERN.CREATE)
     @Bind(Payload())
     async register(payload) {
         console.log('User controller received register');
         return await this.service.register(payload);
     }
 
-    @MessagePattern(PATTERN.UPDATE_SETTING)
+    @MessagePattern(USER_PATTERN.UPDATE_SETTING)
     @Bind(Payload())
     async updateSetting(payload) {
         return await this.service.updateSetting(payload);
     }
 
-    @MessagePattern(PATTERN.UPDATE)
+    @MessagePattern(USER_PATTERN.UPDATE)
     @Bind(Payload())
     async update(payload) {
         return await this.service.update(payload);
     }
 
-    @MessagePattern(PATTERN.DELETE)
+    @MessagePattern(USER_PATTERN.DELETE)
     @Bind(Payload())
     async delete(id) {
         return await this.service.delete(id);
