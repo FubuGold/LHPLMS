@@ -7,4 +7,4 @@ import { AssignmentService } from './assignment.service';
   controllers: [AssignmentController],
   providers: [AssignmentService],
 })
-export class AppModule { }
+export class AssignmentModule { }

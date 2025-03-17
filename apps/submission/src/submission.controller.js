@@ -1,9 +1,9 @@
 import { Controller, Dependencies, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { SubmissionService } from './submission.service';
 
 @Controller()
-@Dependencies(AppService)
-export class AppController {
+@Dependencies(SubmissionService)
+export class SubmissionController {
   constructor(appService) {
     this.appService = appService;
   }
