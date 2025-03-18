@@ -218,6 +218,7 @@ model Class {
 model ClassPost {
   id         String   @id @default(uuid()) @db.Uuid
   classId    String   @db.Uuid
+  title      String   @db.Text
   content    String   @db.Text
   class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   resourceId String   @db.Uuid
