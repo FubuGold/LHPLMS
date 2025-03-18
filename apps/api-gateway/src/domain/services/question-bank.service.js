@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
+import { QUESTIONBANK_PATTERN } from '@app/lib/contracts/question-bank/question-bank.pattern'
 
 @Injectable()
-export class QuestionBankService {}
+@Dependencies('QUESTIONBANK_SERVICE')
+export class QuestionBankService {
+    constructor(questionBankClient) {
+        this.questionBankClient = questionBankClient;
+    }
+}

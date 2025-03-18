@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern'
+import { Injectable, Dependencies } from '@nestjs/common';
+import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern';
 
 @Injectable()
+@Dependencies('ASSIGNMENT_SERVICE')
 export class AssignmentService {
-    constructor() {
-
+    constructor(assignmentClient) {
+        this.assignmentClient = assignmentClient;
     }
 
     async create(payload) {

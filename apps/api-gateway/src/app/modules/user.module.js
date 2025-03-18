@@ -10,7 +10,7 @@ import { UserController } from '../routes/user.controller';
       {
         name: 'USER_SERVICE',
         transport: Transport.TCP,
-        options: { port: 3001 },
+        options: { port: 3009 },
       },
     ]),
   ],
