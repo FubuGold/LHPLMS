@@ -79,6 +79,7 @@ model UserTask {
   id           String     @id @default(uuid()) @db.Uuid
   userId       String     @db.Uuid
   assignmentId String     @db.Uuid
+  isDone       Boolean    @db.Boolean
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
