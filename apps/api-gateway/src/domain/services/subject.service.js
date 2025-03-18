@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
+import { SUBJECT_PATTERN } from '@app/lib/contracts/subject/subject.pattern'
 
 @Injectable()
-export class SubjectService {}
+@Dependencies('SUBJECT_SERVICE')
+export class SubjectService {
+    constructor(subjectClient) {
+        this.subjectClient = subjectClient;
+    }
+}

@@ -15,7 +15,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       {
         name: 'API_GATEWAY',
         transport: Transport.TCP,
-        options: { port: 3003 },
+        options: { port: 3010 },
         retryAttempts: 10,
         retryDelay: 1000,
       }
