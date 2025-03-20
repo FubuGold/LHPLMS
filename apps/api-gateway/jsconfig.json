@@ -2,7 +2,12 @@
   "compilerOptions": {
     "target": "ES2023",
     "module": "CommonJS",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+        "@": ["./src"],
+        "@app/lib/contracts": ["../../libs/contracts/src"],
+        "@app/lib/contracts/*": ["../../libs/contracts/src/*"],
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

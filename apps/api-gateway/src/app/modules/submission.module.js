@@ -7,7 +7,7 @@ import { SubmissionService } from '../../domain/services/submission.service';
   imports: [
     ClientsModule.register([
       {
-        name: 'SUBMISSION_CLIENT',
+        name: 'SUBMISSION_SERVICE',
         transport: Transport.TCP,
         options: { port: 3008 },
         retryAttempts: 10,
