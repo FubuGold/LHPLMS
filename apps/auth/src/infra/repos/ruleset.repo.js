@@ -38,10 +38,9 @@ export class RulesetRepo {
   }
 
   async update(ruleset) {
-    await this.prisma.ruleset.upsert({
+    await this.prisma.ruleset.update({
       where: { id: ruleset.id },
       update: { ...ruleset },
-      create: { ...ruleset },
     });
   }
 }

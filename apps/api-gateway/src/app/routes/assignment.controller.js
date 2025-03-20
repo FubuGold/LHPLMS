@@ -21,8 +21,9 @@ export class AssignmentController {
     }
 
     @Get()
-    async getAll() {
-        return await this.assignmentService.getAll();
+    @Bind(Query())
+    async getAll(queryParam) {
+        return await this.assignmentService.getAll(queryParam);
     }
 
     @Patch(':id')

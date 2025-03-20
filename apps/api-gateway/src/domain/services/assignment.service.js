@@ -1,5 +1,6 @@
 import { Injectable, Dependencies } from '@nestjs/common';
 import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern';
+import { last, lastValueFrom } from 'rxjs';
 
 @Injectable()
 @Dependencies('ASSIGNMENT_SERVICE')
@@ -9,22 +10,32 @@ export class AssignmentService {
     }
 
     async create(payload) {
-        throw new Error('Function not implemented');
+        await lastValueFrom(
+            this.assignmentClient.send(ASSIGNMENT_PATTERN.CREATE, payload)
+        );
     }
 
     async getOne(id) {
-        throw new Error('Function not implemented');
+        return await lastValueFrom(
+            this.assignmentClient.send(ASSIGNMENT_PATTERN.GET_ONE,id)
+        );
     }
 
-    async getAll() {
-        throw new Error('Function not implemented');
+    async getAll(queryParam) {
+        return await lastValueFrom(
+            this.assignmentClient.send(ASSIGNMENT_PATTERN.GET_ALL, queryParam)
+        );
     }
 
     async update(payload) {
-        throw new Error('Function not implemented');
+        await lastValueFrom(
+            this.assignmentClient.send(ASSIGNMENT_PATTERN.UPDATE, payload)
+        );
     }
 
-    async delete() {
-        throw new Error('Function not implemented');
+    async delete(id) {
+        await lastValueFrom (
+            this.assignmentClient.send(ASSIGNMENT_PATTERN.DELETE, id)
+        );
     }
 }
