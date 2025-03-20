@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { GroupController } from '../group.controller';
 import { GroupService } from '../domain/services/group.service';
 

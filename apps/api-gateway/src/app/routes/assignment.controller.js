@@ -1,4 +1,4 @@
-import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post } from '@nestjs/common';
+import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
 
 @Controller('assignment')

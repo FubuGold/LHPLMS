@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AssignmentController } from '../routes/assignment.controller';
 import { AssignmentService } from '../../domain/services/assignment.service';
 

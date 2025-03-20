@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { SubmissionController } from '../routes/submission.controller';
 import { SubmissionService } from '../../domain/services/submission.service';
 
@@ -6,7 +7,7 @@ import { SubmissionService } from '../../domain/services/submission.service';
   imports: [
     ClientsModule.register([
       {
-        name: 'SUBMISSION_SERVICE',
+        name: 'SUBMISSION_CLIENT',
         transport: Transport.TCP,
         options: { port: 3008 },
         retryAttempts: 10,

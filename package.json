@@ -11,6 +11,7 @@
     "gateway:dev": "cd ./apps/api-gateway && nodemon",
     "auth:dev": "cd ./apps/auth && nodemon",
     "user:dev": "cd ./apps/user && nodemon",
+    "assignment:dev": "cd ./apps/assignment && nodemon",
     "start:dev": "concurrently \"npm run api-gateway:dev\" \"npm run user:dev\" \"npm run auth:dev\"",
     "test": "jest --watch",
     "test:cov": "jest --coverage",

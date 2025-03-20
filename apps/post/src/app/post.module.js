@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { PostController } from './post.controller';
 import { PostService } from '../domain/services/post.service';
 

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { SubmissionController } from './submission.controller';
 import { SubmissionService } from '../domain/services/submission.service';
 

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { QuestionBankController } from './question-bank.controller';
 import { QuestionBankService } from '../domain/services/question-bank.service';
 
