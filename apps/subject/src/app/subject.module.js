@@ -3,7 +3,17 @@ import { SubjectController } from './subject.controller';
 import { SubjectService } from './subject.service';
 
 @Module({
-  imports: [],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'API_GATEWAY',
+        transport: Transport.TCP,
+        options: { port: 3001 },
+        retryAttempts: 10,
+        retryDelay: 1000,
+      }
+    ])
+  ],
   controllers: [SubjectController],
   providers: [SubjectService],
 })

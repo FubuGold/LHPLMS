@@ -3,7 +3,17 @@ import { AssignmentController } from './assignment.controller';
 import { AssignmentService } from '../domain/services/assignment.service';
 
 @Module({
-    imports: [],
+    imports: [
+        ClientsModule.register([
+          {
+            name: 'API_GATEWAY',
+            transport: Transport.TCP,
+            options: { port: 3001 },
+            retryAttempts: 10,
+            retryDelay: 1000,
+          }
+        ])
+      ],
     controllers: [AssignmentController],
     providers: [AssignmentService],
 })
