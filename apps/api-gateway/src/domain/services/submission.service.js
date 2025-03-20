@@ -1,5 +1,5 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { SUBMISSION_PATTERN } from '@app/lib/contracts/submission/submission.pattern'
+import { SUBMISSION_PATTERN } from '@app/lib/contracts/submission/submission.pattern';
 
 @Injectable()
 @Dependencies('SUBMISSION_SERVICE')
