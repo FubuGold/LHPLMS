@@ -18,6 +18,7 @@ export class AssignmentService {
     return await this.assignmentRepo.getOne(id);
   }
 
+  // Currently not have filter
   async getAll(queryParam) {
     return await this.assignmentRepo.getAll(queryParam);
   }

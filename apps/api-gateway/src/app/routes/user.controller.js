@@ -54,12 +54,6 @@ export class UserController {
     return await this.userService.getAll();
   }
 
-  @Post()
-  @Bind(Body())
-  async register(payload) {
-    return await this.userService.register(payload);
-  }
-
   @MessagePattern(USER_PATTERN.CREATE, Transport.TCP)
   @Bind(Payload())
   async registerTCP(payload) {
