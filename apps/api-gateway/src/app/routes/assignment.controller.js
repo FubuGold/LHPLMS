@@ -22,14 +22,15 @@ export class AssignmentController {
     //     return `Test: ${classId}`
     // }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.GET_ONE)
-    @Bind(Payload())
+    @Get(':id')
+    @Bind(Param('id'))
     async getOne(id) {
         return await this.assignmentService.getOne(id);
     }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.GET_ALL)
-    @Bind(Payload())
+
+    @Get()
+    @Bind(Query())
     async getAll(queryParam) {
         return await this.assignmentService.getAll(queryParam);
     }
