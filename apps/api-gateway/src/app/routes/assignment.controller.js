@@ -15,6 +15,12 @@ export class AssignmentController {
         return await this.assignmentService.create({ ...body, classId: classId });
     }
 
+    // @Get('test')
+    // @Bind(Param('classId'))
+    // test(classId) {
+    //     return `Test: ${classId}`
+    // }
+
     @Get(':assignmentId')
     async getOne(id) {
         return await this.assignmentService.getOne(id);
