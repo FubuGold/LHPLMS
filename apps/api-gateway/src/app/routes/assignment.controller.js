@@ -16,6 +16,12 @@ export class AssignmentController {
         return await this.assignmentService.create(payload);
     }
 
+    // @Get('test')
+    // @Bind(Param('classId'))
+    // test(classId) {
+    //     return `Test: ${classId}`
+    // }
+
     @MessagePattern(ASSIGNMENT_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
