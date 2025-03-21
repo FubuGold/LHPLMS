@@ -94,6 +94,15 @@
         "tsConfigPath": "apps/question-bank/jsconfig.json"
       }
     },
+    "resource": {
+      "type": "application",
+      "root": "apps/resource",
+      "entryFile": "main",
+      "sourceRoot": "apps/resource/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/resource/tsconfig.app.json"
+      }
+    },
     "subject": {
       "type": "application",
       "root": "apps/subject",
