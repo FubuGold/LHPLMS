@@ -14,17 +14,18 @@ export class AssignmentController {
         return await this.assignmentService.create(payload);
     }
 
+    // @Get('test')
+    // @Bind(Param('classId'))
+    // test(classId) {
+    //     return `Test: ${classId}`
+    // }
+
     @Get(':id')
     @Bind(Param('id'))
     async getOne(id) {
         return await this.assignmentService.getOne(id);
     }
 
-    @Get('test')
-    @Bind(Param('classId'))
-    test(classId) {
-        return `Test: ${classId}`
-    }
 
     @Get()
     @Bind(Query())

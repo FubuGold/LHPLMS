@@ -1,6 +1,6 @@
-import { Controller, Dependencies, Get } from '@nestjs/common';
+import { Bind, Controller, Dependencies, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices'
-import { AssignmentService } from './assignment.service';
+import { AssignmentService } from '../domain/services/assignment.service';
 import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern'
 
 @Controller()
