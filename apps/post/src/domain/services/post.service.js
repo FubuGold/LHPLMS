@@ -9,15 +9,19 @@ export class PostService {
         this.postRepo = postRepo;
     }
 
-    async getAll({ classId, ownerId }) {
+    async getAll(payload) {
         const filter = {};
 
-        if (classId) filter.classId = classId;
-        if (ownerId) filter.ownerId = ownerId;
+        //Filter all undefined and null values
+        Object.entries(payload).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) filter[key] = value;
+        });
 
         return await this.postRepo.getAll(filter);
     }
-    getOne() {}
+    async getOne(payload) {
+        return await this.postRepo.getOne(payload);
+    }
     create() {}
     update() {}
     delete() {}

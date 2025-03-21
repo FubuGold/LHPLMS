@@ -35,4 +35,27 @@ export class PostRepo {
                 }),
         );
     }
+
+    async getOne({ id }) {
+        const data = await this.prisma.classPost.findUnique({
+            where: { id: id },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                resource: {
+                    ownerId: true,
+                    createAt: true,
+                },
+            },
+        });
+
+        return new Post({
+            id: data.id,
+            title: data.title,
+            content: data.content,
+            ownerId: data.resource.ownerId,
+            createAt: data.resource.createAt,
+        });
+    }
 }

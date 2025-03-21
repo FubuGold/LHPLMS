@@ -13,11 +13,15 @@ export class PostController {
 
     @MessagePattern(POST_PATTERN.GET_ALL)
     @Bind(Payload())
-    getAll(payload) {}
+    async getAll(payload) {
+        return await this.postService.getAll(payload);
+    }
 
     @MessagePattern(POST_PATTERN.GET_ONE)
     @Bind(Payload())
-    getOne(payload) {}
+    async getOne(payload) {
+        return await this.postService.getOne(payload);
+    }
 
     @MessagePattern(POST_PATTERN.CREATE)
     @Bind(Payload())
