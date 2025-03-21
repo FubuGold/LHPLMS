@@ -1,7 +1,7 @@
 import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
 
-@Controller('assignment')
+@Controller('assignments')
 @Dependencies(AssignmentService)
 export class AssignmentController {
     constructor(assignmentService) {

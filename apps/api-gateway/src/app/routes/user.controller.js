@@ -12,7 +12,7 @@ import {
 import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
 import { UserService } from '../../domain/services/user.service';
 import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
-@Controller('user')
+@Controller('users')
 @Dependencies(UserService)
 export class UserController {
   constructor(userService) {

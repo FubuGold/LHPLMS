@@ -2,7 +2,7 @@ import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post }
 import { PostService } from '../../domain/services/post.service';
 
 
-@Controller('post')
+@Controller('posts')
 @Dependencies(PostService)
 export class PostController {
     constructor(postService) {

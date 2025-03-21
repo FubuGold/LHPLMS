@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { QuestionBankService } from '../../domain/services/question-bank.service';
 
-@Controller('question-bank')
+@Controller('question-banks')
 @Dependencies(QuestionBankService)
 export class QuestionBankController {
     constructor(QuestionBankService) {
