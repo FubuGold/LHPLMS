@@ -1,6 +1,7 @@
-import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post } from '@nestjs/common';
+import { Bind, Controller, Dependencies } from '@nestjs/common';
 import { PostService } from '../../domain/services/post.service';
-
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { POST_PATTERN } from '@app/lib/contracts/post/post.pattern';
 
 @Controller('post')
 @Dependencies(PostService)
@@ -9,32 +10,32 @@ export class PostController {
         this.postService = postService;
     }
 
-    @Post()
-    @Bind(Body())
+    @MessagePattern(POST_PATTERN.CREATE)
+    @Bind(Payload())
     async create(payload) {
         return await this.postService.create(payload);
     }
 
-    @Get(':id')
-    @Bind(Param('id'))
+    @MessagePattern(POST_PATTERN.GET_ONE)
+    @Bind(Payload())
     async getOne(id) {
         return await this.postService.getOne(id);
     }
 
-    @Get()
-    @Bind()
-    async getAll() {
-        return await this.postService.getAll();
+    @MessagePattern(POST_PATTERN.GET_ALL)
+    @Bind(Payload())
+    async getAll(payload) {
+        return await this.postService.getAll(payload);
     }
 
-    @Patch(':id')
-    @Bind(Param('id'), Body())
-    async update(id, payload) {
-        return await this.postService.update({ ...payload, id });
+    @MessagePattern(POST_PATTERN.UPDATE)
+    @Bind(Payload())
+    async update(payload) {
+        return await this.postService.update({ ...payload });
     }
 
-    @Delete(':id')
-    @Bind(Param('id'))
+    @MessagePattern(POST_PATTERN.DELETE)
+    @Bind(Payload())
     async delete(id) {
         return await this.postService.delete(id);
     }
