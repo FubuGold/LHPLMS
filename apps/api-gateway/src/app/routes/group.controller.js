@@ -24,6 +24,10 @@ export class GroupController {
     @Bind(Param('id'))
     getOne(id) {}
 
+    @Get(':id/users')
+    @Bind(Param('id'))
+    getUser(id) {}
+
     @Post()
     createGroup() {}
 

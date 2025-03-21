@@ -1,7 +1,7 @@
 import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
 
-@Controller('assignments')
+@Controller('classes/:classId/assignments')
 @Dependencies(AssignmentService)
 export class AssignmentController {
     constructor(assignmentService) {
@@ -18,6 +18,12 @@ export class AssignmentController {
     @Bind(Param('id'))
     async getOne(id) {
         return await this.assignmentService.getOne(id);
+    }
+
+    @Get('test')
+    @Bind(Param('classId'))
+    test(classId) {
+        return `Test: ${classId}`
     }
 
     @Get()

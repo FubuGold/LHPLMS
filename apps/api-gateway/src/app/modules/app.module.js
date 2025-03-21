@@ -10,6 +10,7 @@ import { QuestionBankModule } from './question-bank.module';
 import { SubjectModule } from './subject.module';
 import { SubmissionModule } from './submission.module';
 import { UserModule } from './user.module';
+import { ClassModule } from './class.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user.module';
         QuestionBankModule,
         SubjectModule,
         SubmissionModule,
+        ClassModule
     ],
     controllers: [AppController],
     providers: [],
