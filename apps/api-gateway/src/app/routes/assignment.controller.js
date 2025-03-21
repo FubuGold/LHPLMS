@@ -1,16 +1,7 @@
-import {
-    Bind,
-    Body,
-    Controller,
-    Query,
-    Dependencies,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-} from '@nestjs/common';
+import { Bind, Controller, Dependencies } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern';
 
 @Controller('classes/:classId/assignments')
 @Dependencies(AssignmentService)
@@ -19,38 +10,32 @@ export class AssignmentController {
         this.assignmentService = assignmentService;
     }
 
-    @Post()
-    @Bind(Body())
+    @MessagePattern(ASSIGNMENT_PATTERN.CREATE)
+    @Bind(Payload())
     async create(payload) {
         return await this.assignmentService.create(payload);
     }
 
-    @Get(':id')
-    @Bind(Param('id'))
+    @MessagePattern(ASSIGNMENT_PATTERN.GET_ONE)
+    @Bind(Payload())
     async getOne(id) {
         return await this.assignmentService.getOne(id);
     }
 
-    @Get('test')
-    @Bind(Param('classId'))
-    test(classId) {
-        return `Test: ${classId}`
-    }
-
-    @Get()
-    @Bind(Query())
+    @MessagePattern(ASSIGNMENT_PATTERN.GET_ALL)
+    @Bind(Payload())
     async getAll(queryParam) {
         return await this.assignmentService.getAll(queryParam);
     }
 
-    @Patch(':id')
-    @Bind(Param('id'), Body())
-    async update(id, payload) {
-        return await this.assignmentService.update({ ...payload, id: id });
+    @MessagePattern(ASSIGNMENT_PATTERN.UPDATE)
+    @Bind(Payload())
+    async update(payload) {
+        return await this.assignmentService.update({ ...payload });
     }
 
-    @Delete(':id')
-    @Bind(Param('id'))
+    @MessagePattern(ASSIGNMENT_PATTERN.DELETE)
+    @Bind(Payload())
     async delete(id) {
         return await this.assignmentService.delete(id);
     }
