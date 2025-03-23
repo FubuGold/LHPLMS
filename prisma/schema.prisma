@@ -18,8 +18,6 @@ model Resource {
   ownerId        String           @db.Uuid
   createAt       DateTime         @db.Timestamptz
   owner          User             @relation(fields: [ownerId], references: [id])
-  Class          Class[]
-  ClassPost      ClassPost[]
   ClassAssigment ClassAssigment[]
   QuestionBank   QuestionBank[]
   Submission     Submission[]
@@ -49,6 +47,9 @@ model User {
   UserToken      UserToken[]
   UserCredential UserCredential[]
   UserSetting    UserSetting[]
+
+  Class Class[]
+  ClassPost ClassPost[]
   role           Role             @relation(fields: [roleId], references: [id])
 }
 
@@ -143,13 +144,14 @@ model Class {
   id              String           @id @default(uuid()) @db.Uuid
   name            String           @db.Text
   subjectId       String           @db.Uuid
-  resourceId      String           @db.Uuid
+  ownerId        String           @db.Uuid
+  createAt       DateTime         @db.Timestamptz
   backgroundImage String           @db.Text
+  owner          User             @relation(fields: [ownerId], references: [id])
   subject         Subject?         @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ClassPost       ClassPost[]
   ClassAssigment  ClassAssigment[]
   UserClass       UserClass[]
-  resource        Resource         @relation(fields: [resourceId], references: [id])
 }
 
 model ClassPost {
@@ -157,10 +159,11 @@ model ClassPost {
   classId    String @db.Uuid
   title      String @db.Text
   content    String @db.Text
-  resourceId String @db.Uuid
+  ownerId        String           @db.Uuid
+  createAt       DateTime         @db.Timestamptz
 
   class    Class    @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  resource Resource @relation(fields: [resourceId], references: [id])
+  owner          User             @relation(fields: [ownerId], references: [id])
 
   @@index([classId])
 }
