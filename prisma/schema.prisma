@@ -158,7 +158,7 @@ model ClassPost {
   createAt DateTime @db.Timestamptz
 
   class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  owner User  @relation(fields: [ownerId], references: [id])
+  owner User  @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([classId])
 }
