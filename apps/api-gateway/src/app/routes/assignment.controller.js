@@ -1,7 +1,6 @@
-import { Bind, Controller, Dependencies } from '@nestjs/common';
+import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Query } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern';
 
 @Controller('classes/:classId/assignments')
 @Dependencies(AssignmentService)
@@ -10,38 +9,31 @@ export class AssignmentController {
         this.assignmentService = assignmentService;
     }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.CREATE)
-    @Bind(Payload())
-    async create(payload) {
-        return await this.assignmentService.create(payload);
+    @Post()
+    @Bind(Param('classId'), Body())
+    async create(classId, body) {
+        return await this.assignmentService.create({ ...body, classId: classId });
     }
 
-    // @Get('test')
-    // @Bind(Param('classId'))
-    // test(classId) {
-    //     return `Test: ${classId}`
-    // }
-
-    @Get(':id')
-    @Bind(Param('id'))
+    @Get(':assignmentId')
     async getOne(id) {
         return await this.assignmentService.getOne(id);
     }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.GET_ALL)
-    @Bind(Payload())
-    async getAll(queryParam) {
-        return await this.assignmentService.getAll(queryParam);
+    @Get()
+    @Bind(Param('classId'), Query())
+    async getAll(classId, queryParam) {
+        return await this.assignmentService.getAll({ ...queryParam, classId: classId });
     }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.UPDATE)
-    @Bind(Payload())
-    async update(payload) {
-        return await this.assignmentService.update({ ...payload });
+    @Patch(':assignmentId')
+    @Bind(Param('assignmentId'), Body())
+    async update(id, body) {
+        return await this.assignmentService.update({ ...body, assignmentId: id });
     }
 
-    @MessagePattern(ASSIGNMENT_PATTERN.DELETE)
-    @Bind(Payload())
+    @Delete(':assignmentId')
+    @Bind(Param('assignmentId'))
     async delete(id) {
         return await this.assignmentService.delete(id);
     }

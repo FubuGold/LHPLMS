@@ -16,15 +16,15 @@ import { ClassModule } from './class.module';
     imports: [
         UserModule,
         AuthModule,
+        ClassModule,
         AssignmentModule,
         GroupModule,
         PostModule,
         QuestionBankModule,
         SubjectModule,
         SubmissionModule,
-        ClassModule
     ],
     controllers: [AppController],
     providers: [],
 })
-export class AppModule {}
+export class AppModule { }
