@@ -3,15 +3,28 @@ import { Authenticator } from '../aggregate/authenticate.aggregate';
 @Injectable()
 @Dependencies(Authenticator)
 export class AuthDomainService {
-  constructor(Authenticator) {
-    this.Authenticator = Authenticator;
-  }
+    constructor(Authenticator) {
+        this.Authenticator = Authenticator;
+    }
 
-  login(username, password) {
-    return this.Authenticator.login(username, password);
-  }
+    async login(username, password) {
+        return await this.Authenticator.login(username, password);
+    }
 
-  register(name, username, dob, avatar, password) {
-    return this.Authenticator.register(name, username, dob, avatar, password);
-  }
+    async register(name, username, dob, avatar, password) {
+        return await this.Authenticator.register(
+            name,
+            username,
+            dob,
+            avatar,
+            password,
+        );
+    }
+
+    async getUserByToken(accessToken, refreshToken) {
+        return await this.Authenticator.getUserByToken(
+            accessToken,
+            refreshToken,
+        );
+    }
 }

@@ -1,11 +1,17 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { POST_PATTERN } from '@app/lib/contracts/post/post.pattern'
+import { POST_PATTERN } from '@app/lib/contracts/post/post.pattern';
 
 @Injectable()
 @Dependencies('POST_SERVICE')
 export class PostService {
     constructor(postClient) {
         this.postClient = postClient;
+    }
+
+    async ping() {
+        return await this.postClient
+            .send(POST_PATTERN.PING, 'ping')
+            .toPromise();
     }
 
     async create(payload) {

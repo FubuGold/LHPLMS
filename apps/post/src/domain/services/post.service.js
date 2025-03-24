@@ -2,11 +2,14 @@ import { Dependencies, Injectable } from '@nestjs/common';
 import { PostRepo } from '../../infra/repo/post.repo';
 
 @Injectable()
-@Dependencies('API_GATEWAY', PostRepo)
+@Dependencies(PostRepo)
 export class PostService {
-    constructor(client, postRepo) {
-        this.client = client;
+    constructor(postRepo) {
         this.postRepo = postRepo;
+    }
+
+    ping() {
+        return 'Pong';
     }
 
     async getAll(payload) {

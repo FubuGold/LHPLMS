@@ -30,8 +30,8 @@ export class PostRepo {
                     id: post.id,
                     title: post.title,
                     content: post.content,
-                    ownerId: post.resource.ownerId,
-                    createAt: post.resource.createAt,
+                    ownerId: post.ownerId,
+                    createAt: post.createAt,
                 }),
         );
     }
@@ -54,8 +54,8 @@ export class PostRepo {
             id: data.id,
             title: data.title,
             content: data.content,
-            ownerId: data.resource.ownerId,
-            createAt: data.resource.createAt,
+            ownerId: data.ownerId,
+            createAt: data.createAt,
         });
     }
 }

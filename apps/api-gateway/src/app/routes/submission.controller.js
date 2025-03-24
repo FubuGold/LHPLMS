@@ -15,17 +15,11 @@ export class SubmissionController {
         this.SubmissionService = SubmissionService;
     }
 
-    @Get()
     getAll() {}
 
-    @Get(':id')
-    @Bind(Param('id'))
     getOne(id) {}
 
-    @Post()
     createSubmission() {}
 
-    @Delete(':id')
-    @Bind(Param('id'))
     deleteSubmission(id) {}
 }
