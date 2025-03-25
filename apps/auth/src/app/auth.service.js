@@ -23,7 +23,7 @@ export class AuthService {
         );
     }
 
-    async getUserByToken(accessToken, refreshToken) {
+    async authenticate(accessToken, refreshToken) {
         return await this.authDomainService.getUserByToken(
             accessToken,
             refreshToken,

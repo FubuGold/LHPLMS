@@ -7,26 +7,40 @@ import { User } from '../entities/user.entity';
 import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
 import bcrypt from 'bcrypt';
 import { lastValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-@Dependencies('API_GATEWAY', UserCredentialRepo, UserTokenRepo, JwtService)
+@Dependencies(
+    'API_GATEWAY',
+    UserCredentialRepo,
+    UserTokenRepo,
+    JwtService,
+    ConfigService,
+)
 export class Authenticator {
-    constructor(userClient, UserCredentialRepo, UserTokenRepo, JwtService) {
+    constructor(
+        userClient,
+        UserCredentialRepo,
+        UserTokenRepo,
+        JwtService,
+        ConfigService,
+    ) {
         this.userClient = userClient;
         this.UserCredentialRepo = UserCredentialRepo;
         this.UserTokenRepo = UserTokenRepo;
         this.JwtService = JwtService;
+        this.ConfigService = ConfigService;
     }
 
     async createNewAccessToken(user) {
-        return await this.JwtService.signAsync(user, {
-            secret: process.env['ACCESS_TOKEN'],
+        return await this.JwtService.signAsync(user.id, {
+            secret: this.ConfigService.get('ACCESS_TOKEN'),
             expiresIn: '3h',
         });
     }
     async createNewRefreshToken(user) {
-        return await this.JwtService.signAsync(user, {
-            secret: process.env['REFRESH_TOKEN'],
+        return await this.JwtService.signAsync(user.id, {
+            secret: this.ConfigService.get('REFRESH_TOKEN'),
             expiresIn: '7d',
         });
     }
@@ -38,6 +52,7 @@ export class Authenticator {
 
         if (!user) return undefined;
 
+        //If user somehow doesn't have a credential then they are fake users
         const credential = await this.UserCredentialRepo.getByUserId(user.id);
         if (!credential) return undefined;
 
@@ -115,24 +130,15 @@ export class Authenticator {
         return true;
     }
 
-    async getUserByToken(accessToken, refreshToken) {
-        //Verify accessToken first
-        let user = await this.verifyToken(
-            accessToken,
-            this.process.env['ACCESS_TOKEN'],
-        );
-
-        if (user) return { user, accessToken };
-
-        //If accessToken is invalid, check if refreshToken is existed in db
-
+    async refreshUserToken(refreshToken) {
+        //Check if refreshToken is existed in db
         const refresh = this.UserTokenRepo.getByToken(refreshToken);
 
         //If the token doesn't exist, it has been revoked
         if (!refresh) return null;
 
         //Now valid the token
-        user = this.verifyToken(
+        const user = this.verifyToken(
             refreshToken,
             this.process.env['REFRESH_TOKEN'],
         );
@@ -140,9 +146,17 @@ export class Authenticator {
         if (!user) return null;
 
         //If refreshToken is valid, make new accessToken
-
         const access = await this.createNewAccessToken(user);
 
-        return { user, access };
+        return access;
+    }
+
+    async getUserByToken(accessToken) {
+        //Verify accessToken
+        let user = await this.verifyToken(
+            accessToken,
+            this.ConfigService.get('ACCESS_TOKEN'),
+        );
+        return user;
     }
 }

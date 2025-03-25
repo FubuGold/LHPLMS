@@ -221,8 +221,8 @@ export class ClassController {
         return await this.submissionService.getAll({
             classId: param.classId,
             ownerId: req.user,
-            ...query
-        })
+            ...query,
+        });
     }
 
     @Get(':classId/submissions/:submissionId')
@@ -245,5 +245,5 @@ export class ClassController {
 
     @Get(':classId/users/:userId')
     @Bind(Param(), Req())
-    async getOneUser(param, req) { }
+    async getOneUser(param, req) {}
 }

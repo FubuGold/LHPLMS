@@ -59,8 +59,8 @@ export class PostRepo {
         return await this.prisma.classPost.create({
             data: payload,
             select: {
-                id: true
-            }
+                id: true,
+            },
         });
     }
 
@@ -69,15 +69,14 @@ export class PostRepo {
             where: { id: id },
             data: payload,
             select: {
-                id: true
-            }
-        })
+                id: true,
+            },
+        });
     }
 
     async delete({ id }) {
-        return await this.prisma.classPost.delete({
-            where: { id: id }
+        await this.prisma.classPost.delete({
+            where: { id: id },
         });
     }
 }
-
