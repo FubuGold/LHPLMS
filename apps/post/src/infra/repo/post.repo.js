@@ -18,10 +18,8 @@ export class PostRepo {
                     id: true,
                     title: true,
                     content: true,
-                    resource: {
-                        ownerId: true,
-                        createAt: true,
-                    },
+                    ownerId: true,
+                    createAt: true,
                 },
             })
         ).map(
@@ -43,10 +41,8 @@ export class PostRepo {
                 id: true,
                 title: true,
                 content: true,
-                resource: {
-                    ownerId: true,
-                    createAt: true,
-                },
+                ownerId: true,
+                createAt: true,
             },
         });
 
@@ -58,4 +54,30 @@ export class PostRepo {
             createAt: data.createAt,
         });
     }
+
+    async create(payload) {
+        return await this.prisma.classPost.create({
+            data: payload,
+            select: {
+                id: true
+            }
+        });
+    }
+
+    async update({ id, ...payload }) {
+        return await this.prisma.classPost.update({
+            where: { id: id },
+            data: payload,
+            select: {
+                id: true
+            }
+        })
+    }
+
+    async delete({ id }) {
+        return await this.prisma.classPost.delete({
+            where: { id: id }
+        });
+    }
 }
+

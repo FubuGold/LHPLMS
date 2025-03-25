@@ -30,13 +30,19 @@ export class PostController {
 
     @MessagePattern(POST_PATTERN.CREATE)
     @Bind(Payload())
-    create(payload) {}
+    async create(payload) {
+        return await this.postService.create(payload);
+    }
 
     @MessagePattern(POST_PATTERN.UPDATE)
     @Bind(Payload())
-    update(payload) {}
+    async update(payload) {
+        return await this.postService.update(payload);
+    }
 
     @MessagePattern(POST_PATTERN.DELETE)
     @Bind(Payload())
-    delete(payload) {}
+    async delete(payload) {
+        return await this.postService.delete(payload);
+    }
 }

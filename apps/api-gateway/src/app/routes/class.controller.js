@@ -9,7 +9,6 @@ import {
     Patch,
     Post,
     Query,
-    Res,
     Req,
 } from '@nestjs/common';
 import { ClassService } from '../../domain/services/class.service';

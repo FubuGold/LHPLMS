@@ -13,19 +13,20 @@ export class PostService {
     }
 
     async getAll(payload) {
-        const filter = {};
-
-        //Filter all undefined and null values
-        Object.entries(payload).forEach(([key, value]) => {
-            if (value !== null && value !== undefined) filter[key] = value;
-        });
-
-        return await this.postRepo.getAll(filter);
+        return await this.postRepo.getAll(payload);
     }
     async getOne(payload) {
         return await this.postRepo.getOne(payload);
     }
-    create() {}
-    update() {}
-    delete() {}
+
+    async create(payload) {
+        return await this.postRepo.create(payload);
+    }
+
+    async update(payload) {
+        return await this.postRepo.update(payload);
+    }
+    async delete(payload) {
+        return await this.postRepo.delete(payload);
+    }
 }
