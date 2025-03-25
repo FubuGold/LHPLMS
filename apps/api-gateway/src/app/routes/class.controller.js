@@ -32,7 +32,7 @@ export class ClassController {
         this.submissionService = submissionService;
     }
 
-    @Post('/')
+    @Post()
     @Bind(Body(), Req())
     async create(body, req) {
         return await this.classService.create({
@@ -41,7 +41,7 @@ export class ClassController {
         });
     }
 
-    @Post('/:classId/assignments')
+    @Post(':classId/assignments')
     @Bind(Param(), Body(), Req())
     async createAssignment(param, body, req) {
         return await this.assignmentService.create({
@@ -51,7 +51,7 @@ export class ClassController {
         });
     }
 
-    @Post('/:classId/assignments/:assignmentId/questions')
+    @Post(':classId/assignments/:assignmentId/questions')
     @Bind(Param(), Body())
     async addQuestions(param, body) {
         return await this.assignmentService.addQuestions({
@@ -61,7 +61,7 @@ export class ClassController {
         });
     }
 
-    @Post('/:classId/assignments/:assignmentId/submit')
+    @Post(':classId/assignments/:assignmentId/submit')
     @Bind(Param(), Body())
     async submitAssignment(param, body) {
         return await this.submissionService.submit({
@@ -71,7 +71,7 @@ export class ClassController {
         });
     }
 
-    @Post('/:classId/users')
+    @Post(':classId/users')
     @Bind(Param(), Body())
     async addUsers(param, body) {
         return await this.classService.addUser({
@@ -80,7 +80,7 @@ export class ClassController {
         });
     }
 
-    @Post('/:classId/posts')
+    @Post(':classId/posts')
     @Bind(Param(), Body(), Req())
     async createPost(param, body, req) {
         return await this.postService.create({
@@ -90,7 +90,7 @@ export class ClassController {
         });
     }
 
-    @Patch('/:classId')
+    @Patch(':classId')
     @Bind(Param(), Body())
     async update(param, body) {
         return await this.classService.update({
@@ -99,7 +99,7 @@ export class ClassController {
         });
     }
 
-    @Patch('/:classId/assignments/:assignmentId')
+    @Patch(':classId/assignments/:assignmentId')
     @Bind(Param(), Body())
     async updateAssigment(param, body) {
         return await this.assignmentService.update({
@@ -109,7 +109,7 @@ export class ClassController {
         });
     }
 
-    @Patch('/:classId/posts/:postId')
+    @Patch(':classId/posts/:postId')
     @Bind(Param(), Body())
     async updatePost(param, body) {
         return await this.postService.update({
@@ -119,7 +119,7 @@ export class ClassController {
         });
     }
 
-    @Delete('/:classId')
+    @Delete(':classId')
     @Delete(Param())
     async deleteOne(param) {
         return await this.classService.delete({
@@ -127,7 +127,7 @@ export class ClassController {
         });
     }
 
-    @Delete('/:classId/assignments/:assignmentId')
+    @Delete(':classId/assignments/:assignmentId')
     @Bind(Param())
     async deleteOneAssignment(param) {
         return await this.assignmentService.delete({
@@ -136,7 +136,7 @@ export class ClassController {
         });
     }
 
-    @Delete('/:classId/assignments/:assignmentId/questions/:questionId')
+    @Delete(':classId/assignments/:assignmentId/questions/:questionId')
     @Bind(Param())
     async deleteOneQuestion(param) {
         return await this.assignmentService.deleteQuestion({
@@ -146,7 +146,7 @@ export class ClassController {
         });
     }
 
-    @Delete('/:classId/posts/:postId')
+    @Delete(':classId/posts/:postId')
     @Bind(Param())
     async deleteOnePost(param) {
         return await this.postService.delete({
@@ -155,7 +155,7 @@ export class ClassController {
         });
     }
 
-    @Delete('/:classId/users/:userId')
+    @Delete(':classId/users/:userId')
     @Bind(Param())
     async deleteOneUser(param) {
         return await this.classService.deleteUser({
@@ -164,13 +164,13 @@ export class ClassController {
         });
     }
 
-    @Get('/')
+    @Get('')
     @Bind(Query())
     async getAll() {
         return await this.classService.getAll();
     }
 
-    @Get('/:classId')
+    @Get(':classId')
     @Bind(Param())
     async getOne(param) {
         return await this.classService.getOne({
@@ -178,7 +178,7 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/posts')
+    @Get(':classId/posts')
     @Bind(Param(), Query())
     async getAllPost(param, query) {
         return await this.postService.getAll({
@@ -188,7 +188,7 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/posts/:postId')
+    @Get(':classId/posts/:postId')
     @Bind(Param())
     async getOnePost(param) {
         return await this.postService.getOne({
@@ -197,7 +197,7 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/assignments')
+    @Get(':classId/assignments')
     @Bind(Param(), Query())
     async getAllAssignment(param, query) {
         return await this.assignmentService.getAll({
@@ -207,7 +207,7 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/assignments/:assignmentId')
+    @Get(':classId/assignments/:assignmentId')
     @Bind(Param())
     async getOneAssignment(param) {
         return await this.assignmentService.getOne({
@@ -216,7 +216,26 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/users')
+    @Get(':classId/submissions')
+    @Bind(Param(), Query(), Req())
+    async getAllSubmissions(param, query, req) {
+        return await this.submissionService.getAll({
+            classId: param.classId,
+            ownerId: req.user,
+            ...query
+        })
+    }
+
+    @Get(':classId/submissions/:submissionId')
+    @Bind(Param())
+    async getOneSubmission(param) {
+        return await this.assignmentService.getOne({
+            id: param.submissionId,
+            classId: param.classId,
+        });
+    }
+
+    @Get(':classId/users')
     @Bind(Param(), Query())
     async getAllUser(param, query) {
         return await this.classService.getAll({
@@ -225,12 +244,7 @@ export class ClassController {
         });
     }
 
-    @Get('/:classId/users/:userId')
+    @Get(':classId/users/:userId')
     @Bind(Param(), Req())
-    async getOneUser(param, req) {
-        return await this.postService.getOne({
-            id: req.user,
-            classId: param.classId,
-        });
-    }
+    async getOneUser(param, req) { }
 }
