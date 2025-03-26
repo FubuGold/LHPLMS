@@ -11,14 +11,8 @@ export class AuthDomainService {
         return await this.Authenticator.login(username, password);
     }
 
-    async register(name, username, dob, avatar, password) {
-        return await this.Authenticator.register(
-            name,
-            username,
-            dob,
-            avatar,
-            password,
-        );
+    async register(payload) {
+        return await this.Authenticator.register(payload);
     }
 
     async getUserByToken(accessToken, refreshToken) {

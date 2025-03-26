@@ -12,15 +12,8 @@ export class AuthService {
         return await this.authDomainService.login(username, password);
     }
 
-    async register(name, username, dob, avatar, password, confirmPassword) {
-        return await this.authDomainService.register(
-            name,
-            username,
-            dob,
-            avatar,
-            password,
-            confirmPassword,
-        );
+    async register(payload) {
+        return await this.authDomainService.register(payload);
     }
 
     async authenticate(accessToken, refreshToken) {

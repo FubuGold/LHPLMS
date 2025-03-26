@@ -19,14 +19,7 @@ export class AuthController {
     @MessagePattern(AUTH_PATTERN.REGISTER)
     @Bind(Payload())
     async register(payload) {
-        return await this.AuthService.register(
-            payload.name,
-            payload.username,
-            payload.dob,
-            payload.avatar,
-            payload.password,
-            payload.confirmPassword,
-        );
+        return await this.AuthService.register(payload);
     }
 
     @MessagePattern(AUTH_PATTERN.AUTHENTICATE)
