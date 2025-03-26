@@ -1,17 +1,26 @@
 import { Dependencies, Injectable } from '@nestjs/common';
 import { AssignmentRepo } from '../../infra/repos/assignment.repo';
+import { AssignmentQuestionRepo } from '../../infra/repos/assignmentQuestion.repo';
 import { Assignment } from '../entities/assignment.entity';
+import { AssignmentQuestion } from '../entities/assignmentQuestion.entity';
 
 @Injectable()
-@Dependencies(AssignmentRepo)
+@Dependencies(AssignmentRepo, AssignmentQuestionRepo)
 export class AssignmentService {
-  constructor(assignmentRepo) {
+  constructor(assignmentRepo, assignmentQuestionRepo) {
     this.assignmentRepo = assignmentRepo;
+    this.assignmentQuestionRepo = assignmentQuestionRepo;
   }
 
   async create(payload) {
-    await this.assignmentRepo.create(new Assignment(payload));
-    return null;
+    let assignmentQuestion = payload.question;
+    const assignmentId = (await this.assignmentRepo.create(new Assignment(payload))).id;
+    if (assignmentQuestion !== undefined && assignmentQuestion !== null) {
+      for (const question of assignmentQuestion) {
+        await this.assignmentQuestionRepo.create(new AssignmentQuestion({ ...question, assignmentId: assignmentId }));
+      }
+    }
+    return assignmentId;
   }
 
   async getOne(id) {
@@ -24,12 +33,10 @@ export class AssignmentService {
   }
 
   async update(payload) {
-    await this.assignmentRepo.update(payload);
-    return null;
+    return await this.assignmentRepo.update(payload);
   }
 
   async delete(id) {
-    await this.assignmentRepo.delete(id);
-    return null;
+    return await this.assignmentRepo.delete(id);
   }
 }

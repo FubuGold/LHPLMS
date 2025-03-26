@@ -146,7 +146,7 @@ model Class {
   ClassPost       ClassPost[]
   ClassAssignment ClassAssignment[]
   UserClass       UserClass[]
-  owner           User              @relation(fields: [ownerId], references: [id])
+  Owner           User              @relation(fields: [ownerId], references: [id])
 }
 
 model ClassPost {
@@ -157,8 +157,8 @@ model ClassPost {
   ownerId  String   @db.Uuid
   createAt DateTime @default(now()) @db.Timestamptz
 
-  class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  owner User  @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Class Class @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Owner User  @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([classId])
 }
@@ -173,10 +173,10 @@ model ClassAssignment {
   ownerId   String    @db.Uuid
   createAt  DateTime  @default(now()) @db.Timestamptz
 
-  class                   Class                     @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Class                   Class                     @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ClassAssignmentQuestion ClassAssignmentQuestion[]
   UserTask                UserTask[]
-  owner                   User                      @relation(fields: [ownerId], references: [id])
+  Owner                   User                      @relation(fields: [ownerId], references: [id])
 }
 
 model ClassAssignmentQuestion {
@@ -184,10 +184,11 @@ model ClassAssignmentQuestion {
   assignmentId             String   @db.Uuid
   statement                String   @db.Text
   assignmentQuestionChoice String[]
+  assignmentCorrectAnswer  Int[]
   origin                   String   @db.Uuid
 
-  assignment       ClassAssignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  question         Question           @relation(fields: [origin], references: [id])
+  Assignment       ClassAssignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Question         Question           @relation(fields: [origin], references: [id])
   SubmissionAnswer SubmissionAnswer[]
 
   @@index([assignmentId])
@@ -200,9 +201,9 @@ model QuestionBank {
   ownerId   String   @db.Uuid
   createAt  DateTime @default(now()) @db.Timestamptz
 
-  subject  Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Subject  Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Question Question[]
-  owner    User       @relation(fields: [ownerId], references: [id])
+  Owner    User       @relation(fields: [ownerId], references: [id])
 
   @@index([subjectId])
 }
@@ -214,8 +215,8 @@ model Question {
   questionChoice String[]
   correctAnswer  Int[]
 
-  questionBank       QuestionBank              @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  assignmentQuestion ClassAssignmentQuestion[]
+  QuestionBank       QuestionBank              @relation(fields: [questionBankId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  AssignmentQuestion ClassAssignmentQuestion[]
 
   @@index([questionBankId])
 }

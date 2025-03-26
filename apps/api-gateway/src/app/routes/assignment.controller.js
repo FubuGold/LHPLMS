@@ -1,6 +1,5 @@
 import { Bind, Body, Controller, Delete, Dependencies, Get, Param, Patch, Query, Post } from '@nestjs/common';
 import { AssignmentService } from '../../domain/services/assignment.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('classes/:classId/assignments')
 @Dependencies(AssignmentService)

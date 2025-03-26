@@ -1,17 +1,17 @@
 import { Dependencies, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
-import { Assignment } from "../../domain/entities/assignment.entity";
+import { AssignmentQuestion } from "../../domain/entities/assignmentQuestion.entity";
 
 @Injectable()
 @Dependencies(PrismaService)
-export class AssignmentRepo {
+export class AssignmentQuestionRepo {
     constructor(prisma) {
         this.prisma = prisma;
     }
 
     async getOne(id) {
-        return new Assignment(
-            await this.prisma.classAssignment.findUnique({
+        return new AssignmentQuestion(
+            await this.prisma.classAssignmentQuestion.findUnique({
                 where: {
                     id: id
                 }
@@ -20,16 +20,16 @@ export class AssignmentRepo {
     }
 
     async getAll(where) {
-        let res = await this.prisma.classAssignment.findMany({
+        let res = await this.prisma.classAssignmentQuestion.findMany({
             where: where,
         })
-        res.map((item) => new Assignment(item));
+        res.map((item) => new AssignmentQuestion(item));
         return res;
     }
 
     async create(payload) {
         console.log(payload);
-        return await this.prisma.classAssignment.create({
+        return await this.prisma.classAssignmentQuestion.create({
             data: payload,
             select: {
                 id: true
@@ -38,23 +38,19 @@ export class AssignmentRepo {
     }
 
     async update(payload) {
-        return await this.prisma.classAssignment.update({
+        return await this.prisma.classAssignmentQuestion.update({
             where: {
                 id: payload.id
             },
-            update: payload,
-            select: {
-                id: true
-            }
+            update: payload
         })
     }
 
     async delete(id) {
-        await this.prisma.classAssignment.delete({
+        await this.prisma.classAssignmentQuestion.delete({
             where: {
                 id: id
             }
         })
-        return null;
     }
 }
