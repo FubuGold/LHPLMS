@@ -16,6 +16,12 @@ export class AuthController {
         return await this.AuthService.login(payload.username, payload.password);
     }
 
+    @MessagePattern(AUTH_PATTERN.LOGOUT)
+    @Bind(Payload())
+    async logout({ refreshToken }) {
+        return await this.AuthService.logout(refreshToken);
+    }
+
     @MessagePattern(AUTH_PATTERN.REGISTER)
     @Bind(Payload())
     async register(payload) {
@@ -24,7 +30,8 @@ export class AuthController {
 
     @MessagePattern(AUTH_PATTERN.AUTHENTICATE)
     @Bind(Payload())
-    async authenticate({ accessToken, refreshToken }) {
-        return await this.AuthService.authenticate(accessToken, refreshToken);
+    async authenticate({ accessToken }) {
+        console.log(accessToken);
+        return await this.AuthService.authenticate(accessToken);
     }
 }

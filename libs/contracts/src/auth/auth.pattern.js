@@ -4,6 +4,7 @@ const action = {
     LOGIN: 'login',
     REGISTER: 'register',
     AUTHENTICATE: 'authenticate',
+    LOGOUT: 'logout',
     GENERAL: `*`,
 };
 

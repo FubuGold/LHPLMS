@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../entities/user.entity';
 import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
+import { lastValueFrom } from 'rxjs';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -32,16 +33,22 @@ export class Authenticator {
     }
 
     async createNewAccessToken(user) {
-        return await this.JwtService.signAsync(user.id, {
-            secret: this.ConfigService.get('ACCESS_TOKEN'),
-            expiresIn: '3h',
-        });
+        return await this.JwtService.signAsync(
+            { id: user.id },
+            {
+                secret: this.ConfigService.get('ACCESS_TOKEN'),
+                expiresIn: '15m',
+            },
+        );
     }
     async createNewRefreshToken(user) {
-        return await this.JwtService.signAsync(user.id, {
-            secret: this.ConfigService.get('REFRESH_TOKEN'),
-            expiresIn: '7d',
-        });
+        return await this.JwtService.signAsync(
+            { id: user.id },
+            {
+                secret: this.ConfigService.get('REFRESH_TOKEN'),
+                expiresIn: '7d',
+            },
+        );
     }
 
     async getUserByUserCredential(username, password) {
@@ -61,8 +68,8 @@ export class Authenticator {
         return user;
     }
     async generateToken(user) {
-        const access = await createNewAccessToken(user),
-            refresh = await createNewRefreshToken(user);
+        const access = await this.createNewAccessToken(user),
+            refresh = await this.createNewRefreshToken(user);
 
         const userToken = await this.UserTokenRepo.getByUserId(user.id);
         if (userToken) await this.UserTokenRepo.delete(userToken);
@@ -94,6 +101,7 @@ export class Authenticator {
         try {
             return await this.JwtService.verifyAsync(token, { secret: secret });
         } catch (error) {
+            console.error(error);
             return null;
         }
     }
@@ -103,6 +111,11 @@ export class Authenticator {
         if (!user) return null;
 
         return await this.generateToken(user);
+    }
+
+    async logout(refreshToken) {
+        const token = await this.UserTokenRepo.getByToken(refreshToken);
+        await this.UserTokenRepo.delete(token);
     }
 
     async register(payload) {
@@ -119,8 +132,6 @@ export class Authenticator {
 
         if (!user)
             throw new Error(`User with ${payload.username} already exists`);
-
-        console.log(user);
 
         return await this.registerNewUserCredential(user, payload.password);
     }

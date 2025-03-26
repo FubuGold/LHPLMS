@@ -1,5 +1,5 @@
-import { Injectable, Dependencies } from '@nestjs/common'
-import { PrismaService } from '../database/prisma.service'
+import { Injectable, Dependencies } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
 import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
@@ -15,16 +15,17 @@ export class UserRepo {
 
     async getId(username) {
         try {
-            return (await this.prisma.user.findUnique({
-                where: {
-                    username: username,
-                },
-                select: {
-                    id: true,
-                }
-            })).id;
-        }
-        catch (err) {
+            return (
+                await this.prisma.user.findUnique({
+                    where: {
+                        username: username,
+                    },
+                    select: {
+                        id: true,
+                    },
+                })
+            ).id;
+        } catch (err) {
             return null;
         }
     }
@@ -32,10 +33,10 @@ export class UserRepo {
     async getOne(id) {
         try {
             return await this.prisma.user.findUnique({
-                where: { id: id }
-            })
-        }
-        catch (err) {
+                where: { id: id },
+            });
+        } catch (err) {
+            console.error(err);
             return null;
         }
     }
@@ -44,11 +45,10 @@ export class UserRepo {
         try {
             return new Setting(
                 await this.prisma.userSetting.findUnique({
-                    where: { userId: id }
-                })
-            )
-        }
-        catch (err) {
+                    where: { userId: id },
+                }),
+            );
+        } catch (err) {
             return null;
         }
     }
@@ -57,11 +57,10 @@ export class UserRepo {
         try {
             return new Setting(
                 await this.prisma.userSetting.findUnique({
-                    where: { userId: id }
-                })
-            )
-        }
-        catch (err) {
+                    where: { userId: id },
+                }),
+            );
+        } catch (err) {
             return null;
         }
     }
@@ -71,15 +70,15 @@ export class UserRepo {
             return await this.prisma.user.create({
                 data: user,
             });
-        }
-        catch (err) {
+        } catch (err) {
+            console.error(err);
             return null;
         }
     }
 
     async delete(id) {
         await this.prisma.user.delete({
-            where: { id: id }
+            where: { id: id },
         });
         return null;
     }
@@ -87,7 +86,7 @@ export class UserRepo {
     async update(user) {
         return await this.prisma.user.update({
             where: { id: user.id },
-            data: user
-        })
+            data: user,
+        });
     }
 }

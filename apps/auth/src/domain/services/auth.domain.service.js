@@ -11,14 +11,15 @@ export class AuthDomainService {
         return await this.Authenticator.login(username, password);
     }
 
+    async logout(refreshToken) {
+        return await this.Authenticator.logout(refreshToken);
+    }
+
     async register(payload) {
         return await this.Authenticator.register(payload);
     }
 
-    async getUserByToken(accessToken, refreshToken) {
-        return await this.Authenticator.getUserByToken(
-            accessToken,
-            refreshToken,
-        );
+    async getUserByToken(accessToken) {
+        return await this.Authenticator.getUserByToken(accessToken);
     }
 }
