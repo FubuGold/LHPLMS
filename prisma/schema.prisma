@@ -25,10 +25,10 @@ model User {
   username       String           @unique @db.Text
   dob            DateTime         @db.Date
   avatar         String?          @db.Text
-  quote          String           @db.Text
-  gender         Boolean          @db.Boolean
-  phoneNumber    String           @unique @db.Text
-  email          String           @unique @db.Text
+  quote          String?          @db.Text
+  gender         Boolean?         @db.Boolean
+  phoneNumber    String?          @unique @db.Text
+  email          String?          @unique @db.Text
   roleId         String           @db.Uuid
   UserTask       UserTask[]
   UserGroup      UserGroup[]
@@ -42,7 +42,7 @@ model User {
   classAssignemnt ClassAssignment[]
   questionBank    QuestionBank[]
   submission      Submission[]
-  role            Role              @relation(fields: [roleId], references: [id])
+  role            Role?             @relation(fields: [roleId], references: [id])
 }
 
 model UserToken {
