@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { Transport } from '@nestjs/microservices';
 import { PostModule } from './app/post.module';
 
 async function bootstrap() {

@@ -1,5 +1,5 @@
 import { Injectable, Dependencies } from '@nestjs/common';
-import { AUTH_PATTERN } from '@app/lib/contracts/auth/auth.pattern'
+import { AUTH_PATTERN } from '@app/lib/contracts/auth/auth.pattern';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
@@ -9,30 +9,21 @@ export class AuthService {
         this.authClient = authClient;
     }
 
-    async login(username, password) {
-        return await this.authClient.send(
-            AUTH_PATTERN.LOGIN,
-            {
-                username,
-                password,
-            }
-        );
+    async authenticate(payload = {}) {
+        return await this.authClient
+            .send(AUTH_PATTERN.AUTHENTICATE, payload)
+            .toPromise();
     }
 
-    async register(name, username, dob, avatar, password, confirmPassword) {
-        const res = await lastValueFrom(
-            this.authClient.send(
-                AUTH_PATTERN.REGISTER,
-                {
-                    name,
-                    username,
-                    dob,
-                    avatar,
-                    password,
-                    confirmPassword
-                }
-            ));
+    async login(payload = {}) {
+        return await this.authClient
+            .send(AUTH_PATTERN.LOGIN, payload)
+            .toPromise();
+    }
 
-        return res;
+    async register(payload = {}) {
+        return await this.authClient
+            .send(AUTH_PATTERN.REGISTER, payload)
+            .toPromise();
     }
 }

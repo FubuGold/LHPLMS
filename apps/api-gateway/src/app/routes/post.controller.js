@@ -10,6 +10,11 @@ export class PostController {
         this.postService = postService;
     }
 
+    @MessagePattern(POST_PATTERN.PING)
+    async ping() {
+        return await this.postService.ping();
+    }
+
     @MessagePattern(POST_PATTERN.CREATE)
     @Bind(Payload())
     async create(payload) {

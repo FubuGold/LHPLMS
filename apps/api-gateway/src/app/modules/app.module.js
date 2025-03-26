@@ -12,19 +12,26 @@ import { SubmissionModule } from './submission.module';
 import { UserModule } from './user.module';
 import { ClassModule } from './class.module';
 
+import { AuthGuard } from '../guards/auth.guard';
+
 @Module({
     imports: [
         UserModule,
         AuthModule,
+        ClassModule,
         AssignmentModule,
         GroupModule,
         PostModule,
         QuestionBankModule,
         SubjectModule,
         SubmissionModule,
-        ClassModule
     ],
     controllers: [AppController],
-    providers: [],
+    providers: [
+        {
+            provide: 'APP_GUARD',
+            useClass: AuthGuard,
+        },
+    ],
 })
 export class AppModule {}

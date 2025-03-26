@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AssignmentController } from './assignment.controller';
 import { AssignmentService } from '../domain/services/assignment.service';
+import { AssignmentRepo } from '../infra/repos/assignment.repo';
+import { PrismaService } from '../infra/database/prisma.service';
 
 @Module({
     imports: [
@@ -16,6 +18,6 @@ import { AssignmentService } from '../domain/services/assignment.service';
         ])
       ],
     controllers: [AssignmentController],
-    providers: [AssignmentService],
+    providers: [AssignmentService, AssignmentRepo, PrismaService],
 })
 export class AssignmentModule {}

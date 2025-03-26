@@ -2,13 +2,18 @@ import { Bind, Controller, Dependencies } from '@nestjs/common';
 import { Payload, MessagePattern } from '@nestjs/microservices';
 import { PostService } from '../domain/services/post.service';
 
-import { POST_PATTERN } from '@app/lib/contracts/post.pattern';
+import { POST_PATTERN } from '@app/lib/contracts/post/post.pattern';
 
 @Controller()
 @Dependencies(PostService)
 export class PostController {
     constructor(postService) {
         this.postService = postService;
+    }
+
+    @MessagePattern(POST_PATTERN.PING)
+    ping() {
+        return this.postService.ping();
     }
 
     @MessagePattern(POST_PATTERN.GET_ALL)
@@ -25,13 +30,19 @@ export class PostController {
 
     @MessagePattern(POST_PATTERN.CREATE)
     @Bind(Payload())
-    create(payload) {}
+    async create(payload) {
+        return await this.postService.create(payload);
+    }
 
     @MessagePattern(POST_PATTERN.UPDATE)
     @Bind(Payload())
-    update(payload) {}
+    async update(payload) {
+        return await this.postService.update(payload);
+    }
 
     @MessagePattern(POST_PATTERN.DELETE)
     @Bind(Payload())
-    delete(payload) {}
+    async delete(payload) {
+        return await this.postService.delete(payload);
+    }
 }

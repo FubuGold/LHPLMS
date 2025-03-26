@@ -4,93 +4,159 @@ import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
-import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
 import bcrypt from 'bcrypt';
 import { lastValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-@Dependencies('API_GATEWAY', UserCredentialRepo, UserTokenRepo, JwtService)
+@Dependencies(
+    'API_GATEWAY',
+    UserCredentialRepo,
+    UserTokenRepo,
+    JwtService,
+    ConfigService,
+)
 export class Authenticator {
-  constructor(userClient, UserCredentialRepo, UserTokenRepo, JwtService) {
-    this.userClient = userClient;
-    this.UserCredentialRepo = UserCredentialRepo;
-    this.UserTokenRepo = UserTokenRepo;
-    this.JwtService = JwtService;
-  }
+    constructor(
+        userClient,
+        UserCredentialRepo,
+        UserTokenRepo,
+        JwtService,
+        ConfigService,
+    ) {
+        this.userClient = userClient;
+        this.UserCredentialRepo = UserCredentialRepo;
+        this.UserTokenRepo = UserTokenRepo;
+        this.JwtService = JwtService;
+        this.ConfigService = ConfigService;
+    }
 
-  async getUserByUserCredential(username, password) {
+    async createNewAccessToken(user) {
+        return await this.JwtService.signAsync(user.id, {
+            secret: this.ConfigService.get('ACCESS_TOKEN'),
+            expiresIn: '3h',
+        });
+    }
+    async createNewRefreshToken(user) {
+        return await this.JwtService.signAsync(user.id, {
+            secret: this.ConfigService.get('REFRESH_TOKEN'),
+            expiresIn: '7d',
+        });
+    }
 
-    const user = await lastValueFrom(this.userClient.send(USER_PATTERN.GET_ONE, username));
+    async getUserByUserCredential(username, password) {
+        const user = await lastValueFrom(
+            this.userClient.send(USER_PATTERN.GET_ONE, username),
+        );
 
-    if (!user) return undefined;
+        if (!user) return undefined;
 
-    const credential = await this.UserCredentialRepo.getByUserId(user.id);
-    if (!credential) return undefined;
+        //If user somehow doesn't have a credential then they are fake users
+        const credential = await this.UserCredentialRepo.getByUserId(user.id);
+        if (!credential) return undefined;
 
-    const verified = await bcrypt.compare(password, credential.password);
-    if (!verified) return undefined;
+        const verified = await bcrypt.compare(password, credential.password);
+        if (!verified) return undefined;
 
-    return user;
-  }
-  async generateToken(user) {
-    const access = await this.JwtService.signAsync(user, {
-      secret: process.env['ACCESS_TOKEN'],
-      expiresIn: '3h',
-    }),
-      refresh = await this.JwtService.signAsync(user, {
-        secret: process.env['REFRESH_TOKEN'],
-        expiresIn: '7d',
-      });
+        return user;
+    }
+    async generateToken(user) {
+        const access = await createNewAccessToken(user),
+            refresh = await createNewRefreshToken(user);
 
-    const userToken = await this.UserTokenRepo.getByUserId(user.id);
-    if (userToken) await this.UserTokenRepo.delete(userToken);
+        const userToken = await this.UserTokenRepo.getByUserId(user.id);
+        if (userToken) await this.UserTokenRepo.delete(userToken);
 
-    await this.UserTokenRepo.save(
-      new UserToken({
-        userId: user.id,
-        token: refresh,
-      }),
-    );
+        await this.UserTokenRepo.save(
+            new UserToken({
+                userId: user.id,
+                token: refresh,
+            }),
+        );
 
-    return {
-      accessToken: access,
-      refreshToken: refresh,
-    };
-  }
-  async registerNewUserCredential(user, password) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+        return {
+            accessToken: access,
+            refreshToken: refresh,
+        };
+    }
+    async registerNewUserCredential(user, password) {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-    await this.UserCredentialRepo.create({
-      userId: user.id,
-      password: hashedPassword,
-      salt: salt,
-    });
-  }
+        await this.UserCredentialRepo.create({
+            userId: user.id,
+            password: hashedPassword,
+            salt: salt,
+        });
+    }
+    //Return decoded payload if verified, else return null
+    async verifyToken(token, secret) {
+        try {
+            return await this.JwtService.verifyAsync(token, { secret: secret });
+        } catch (error) {
+            return null;
+        }
+    }
 
-  async login(username, password) {
-    const user = await this.getUserByUserCredential(username, password);
-    if (!user) return null;
+    async login(username, password) {
+        const user = await this.getUserByUserCredential(username, password);
+        if (!user) return null;
 
-    return await this.generateToken(user);
-  }
+        return await this.generateToken(user);
+    }
 
-  async register(name, username, dob, avatar, password, confirmPassword) {
-    const newUser = new User({
-      name: name,
-      username: username,
-      dob: dob,
-      avatar: avatar,
-    });
+    async register(name, username, dob, avatar, password, confirmPassword) {
+        if (password !== confirmPassword)
+            throw new Error(`Passwords confirmation don't match`);
 
-    const user = await lastValueFrom(this.userClient.send(USER_PATTERN.CREATE, newUser));
+        const newUser = new User({
+            name: name,
+            username: username,
+            dob: dob,
+            avatar: avatar,
+        });
 
-    if (!user) throw new Error(`User with ${username} already exists`);
+        const user = await lastValueFrom(
+            this.userClient.send(USER_PATTERN.CREATE, newUser),
+        );
 
-    console.log(user);
+        if (!user) throw new Error(`User with ${username} already exists`);
 
-    await this.registerNewUserCredential(user, password);
+        console.log(user);
 
-    return true;
-  }
+        await this.registerNewUserCredential(user, password);
+
+        return true;
+    }
+
+    async refreshUserToken(refreshToken) {
+        //Check if refreshToken is existed in db
+        const refresh = this.UserTokenRepo.getByToken(refreshToken);
+
+        //If the token doesn't exist, it has been revoked
+        if (!refresh) return null;
+
+        //Now valid the token
+        const user = this.verifyToken(
+            refreshToken,
+            this.process.env['REFRESH_TOKEN'],
+        );
+
+        if (!user) return null;
+
+        //If refreshToken is valid, make new accessToken
+        const access = await this.createNewAccessToken(user);
+
+        return access;
+    }
+
+    async getUserByToken(accessToken) {
+        //Verify accessToken
+        let user = await this.verifyToken(
+            accessToken,
+            this.ConfigService.get('ACCESS_TOKEN'),
+        );
+        return user;
+    }
 }

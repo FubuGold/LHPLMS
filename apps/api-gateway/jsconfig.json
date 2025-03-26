@@ -4,10 +4,19 @@
     "module": "CommonJS",
     "experimentalDecorators": true,
     "paths": {
-        "@": ["./src"],
-        "@app/lib/contracts": ["../../libs/contracts/src"],
-        "@app/lib/contracts/*": ["../../libs/contracts/src/*"],
+      "@": [
+        "./src"
+      ],
+      "@app/lib/contracts": [
+        "../../libs/contracts/src"
+      ],
+      "@app/lib/contracts/*": [
+        "../../libs/contracts/src/*"
+      ],
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

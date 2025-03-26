@@ -1,4 +1,4 @@
-const name = 'assignment';
+const name = 'class';
 
 const action = {
   CREATE: `create`,
