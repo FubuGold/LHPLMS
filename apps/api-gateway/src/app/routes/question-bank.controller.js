@@ -7,6 +7,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { QuestionBankService } from '../../domain/services/question-bank.service';
 
@@ -19,10 +20,15 @@ export class QuestionBankController {
 
     @Get(':id')
     @Bind(Param('id'))
-    getOne(id) {}
+    async getOne(id) {
+        return this.QuestionBankService.getOne(id);
+    }
 
     @Get()
-    getAll() {}
+    @Bind(Query())
+    async getAll(queryParam) {
+        return this.QuestionBankService.getAll(queryParam);
+    }
 
     @Post()
     createQuestionBank() {}

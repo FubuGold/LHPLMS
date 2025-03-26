@@ -52,24 +52,14 @@ export class UserRepo {
             return null;
         }
     }
-
-    async getSetting(id) {
-        try {
-            return new Setting(
-                await this.prisma.userSetting.findUnique({
-                    where: { userId: id }
-                })
-            )
-        }
-        catch (err) {
-            return null;
-        }
-    }
-
+    
     async create(user) {
         try {
             return await this.prisma.user.create({
                 data: user,
+                select: {
+                    id: true
+                }
             });
         }
         catch (err) {
