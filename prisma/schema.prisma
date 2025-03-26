@@ -29,7 +29,7 @@ model User {
   gender         Boolean?         @db.Boolean
   phoneNumber    String?          @unique @db.Text
   email          String?          @unique @db.Text
-  roleId         String           @db.Uuid
+  roleId         String?          @db.Uuid
   UserTask       UserTask[]
   UserGroup      UserGroup[]
   UserClass      UserClass[]
