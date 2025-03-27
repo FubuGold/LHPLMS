@@ -18,7 +18,6 @@ export class SubmissionService {
   async judge(payload) {
     let count = 0;
     for (const answer of payload.SubmissionAnswer) {
-      console.log(answer);
       let questionAnswer = await lastValueFrom(
         this.gateway.send(ASSIGNMENT_PATTERN.GET_ONE_QUESTION, { id: answer.questionId })
       )
