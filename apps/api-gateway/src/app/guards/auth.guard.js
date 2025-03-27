@@ -16,7 +16,6 @@ export class AuthGuard {
     }
 
     async canActivate(context) {
-        return true; // For dev only
         const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass(),

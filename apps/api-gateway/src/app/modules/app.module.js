@@ -13,6 +13,7 @@ import { UserModule } from './user.module';
 import { ClassModule } from './class.module';
 
 import { AuthGuard } from '../guards/auth.guard';
+import { LoggingMiddleware } from '../middleware/log.middleware';
 
 @Module({
     imports: [
@@ -34,4 +35,8 @@ import { AuthGuard } from '../guards/auth.guard';
         },
     ],
 })
-export class AppModule {}
+export class AppModule {
+    configure(consumer) {
+        consumer.apply(LoggingMiddleware).forRoutes('*');
+    }
+}

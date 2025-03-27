@@ -38,14 +38,15 @@ export class AppController {
         return res
             .cookie('accessToken', accessToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'strict',
+                secure: true,
+                sameSite: 'None',
+
                 maxAge: 15 * 60 * 1000,
             })
             .cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'strict',
+                secure: true,
+                sameSite: 'None',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
             .status(201)
@@ -130,6 +131,7 @@ export class AppController {
     @Get('/me')
     @Bind(Req())
     me(req) {
+        console.log(req.userId);
         return this.userService.getOne(req.userId);
     }
 }

@@ -8,6 +8,13 @@
     "scripts": {
         "format": "prettier --write \"**/*.js\"",
         "start": "babel-node index.js",
+        "gateway": "cd ./apps/api-gateway && babel-node index.js",
+        "auth": "cd ./apps/auth && babel-node index.js",
+        "user": "cd ./apps/user && babel-node index.js",
+        "post": "cd ./apps/post && babel-node index.js",
+        "assignment": "cd ./apps/assignment && babel-node index.js",
+        "class": "cd ./apps/class && babel-node index.js",
+        "question-bank": "cd ./apps/question-bank && babel-node index.js",
         "gateway:dev": "cd ./apps/api-gateway && nodemon",
         "auth:dev": "cd ./apps/auth && nodemon",
         "user:dev": "cd ./apps/user && nodemon",
@@ -15,12 +22,12 @@
         "assignment:dev": "cd ./apps/assignment && nodemon",
         "submission:dev": "cd ./apps/submission && nodemon",
         "class:dev": "cd ./apps/class && nodemon",
-        "start:dev": "concurrently \"npm run gateway:dev\" \"npm run user:dev\" \"npm run auth:dev\" \"npm run post:dev\" \"npm run assignment:dev\" \"npm run class:dev\"",
         "question-bank:dev": "cd ./apps/question-bank && nodemon",
+        "start:dev": "concurrently \"npm run gateway:dev\" \"npm run user:dev\" \"npm run auth:dev\" \"npm run post:dev\" \"npm run assignment:dev\" \"npm run class:dev\"",
         "test": "jest --watch",
         "test:cov": "jest --coverage",
         "test:e2e": "jest --config ./apps/backend/test/jest-e2e.json",
-        "prepare": "husky install"
+        "prepare:dev": "husky install"
     },
     "dependencies": {
         "@apollo/server": "^4.11.3",
