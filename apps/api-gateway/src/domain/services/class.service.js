@@ -20,9 +20,21 @@ export class ClassService {
             .toPromise();
     }
 
+    async getAllUser(payload = {}) {
+        return await this.classClient
+            .send(CLASS_PATTERN.GET_ALL_USER, payload)
+            .toPromise();
+    }
+
     async update(payload = {}) {
         return await this.classClient
             .send(CLASS_PATTERN.UPDATE, payload)
+            .toPromise();
+    }
+
+    async deleteUser(payload = {}) {
+        return await this.classClient
+            .send(CLASS_PATTERN.DELETE_USER, payload)
             .toPromise();
     }
 

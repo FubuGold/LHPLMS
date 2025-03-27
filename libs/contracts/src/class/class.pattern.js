@@ -6,6 +6,9 @@ const action = {
   DELETE: `delete`,
   GET_ONE: `getOne`,
   GET_ALL: `getAll`,
+  GET_ALL_USER: `getAllUser`,
+  DELETE_USER: `deleteUser`,
+  ADD_USER: `addUser`,
   GENERAL: `*`,
 };
 
