@@ -29,6 +29,7 @@ export class UserTokenRepo {
     }
 
     async getByToken(token) {
+        if (!token) return null;
         return new UserToken({
             ...(await this.prisma.userToken.findUnique({
                 where: {

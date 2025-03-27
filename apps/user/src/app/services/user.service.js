@@ -6,9 +6,10 @@ import { User } from '../../domain/entities/user.entity';
 import { Setting } from '../../domain/entities/setting.entity';
 import { Task } from '../../domain/entities/task.entity';
 
-
 function validateUUID(id) {
-    return id.match("[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}");
+    return id.match(
+        '[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}',
+    );
 }
 
 @Injectable()
@@ -62,5 +63,4 @@ export class UserService {
         id = await this.getId(id);
         return await this.userRepo.delete(id);
     }
-
 }

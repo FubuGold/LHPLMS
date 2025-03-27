@@ -28,10 +28,12 @@ export class AuthGuard {
         const req = context.switchToHttp().getRequest();
         const { accessToken } = req.cookies;
 
+        if (!accessToken) throw new UnauthorizedException();
+
         const user = await this.authService.authenticate({ accessToken });
 
         if (!user) throw new UnauthorizedException();
-        req.user = user;
+        req.userId = user.id;
         return true;
     }
 }

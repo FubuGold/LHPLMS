@@ -10,20 +10,22 @@ export class ClassRepo {
 
     async create(payload) {
         const data = new Class(payload),
-            currentClass = new Class(await this.prisma.class.create({
-                data: {
-                    ...data,
-                },
-                select: {
-                    id: true
-                }
-            }));
+            currentClass = new Class(
+                await this.prisma.class.create({
+                    data: {
+                        ...data,
+                    },
+                    select: {
+                        id: true,
+                    },
+                }),
+            );
 
         await this.prisma.userClass.create({
             data: {
                 classId: currentClass.id,
-                userId: data.ownerId
-            }
+                userId: data.ownerId,
+            },
         });
 
         return currentClass;
@@ -32,16 +34,18 @@ export class ClassRepo {
     async update(payload) {
         const target = new Class(payload);
 
-        return new Class(await this.prisma.class.update({
-            where: {
-                id: target.id,
-                ownerId: target.ownerId,
-            },
-            data: target,
-            select: {
-                id: true
-            }
-        }));
+        return new Class(
+            await this.prisma.class.update({
+                where: {
+                    id: target.id,
+                    ownerId: target.ownerId,
+                },
+                data: target,
+                select: {
+                    id: true,
+                },
+            }),
+        );
     }
 
     async delete(payload) {
@@ -50,33 +54,35 @@ export class ClassRepo {
         await this.prisma.class.delete({
             where: {
                 id: target.id,
-                ownerId: target.ownerId
-            }
+                ownerId: target.ownerId,
+            },
         });
     }
 
     async getAll(payload) {
         const query = new Class(payload);
-        return (await this.prisma.class.findMany({
-            where: query,
-            include: {
-                UserClass: {
-                    select: {
-                        userId: true
-                    }
+        return (
+            await this.prisma.class.findMany({
+                where: query,
+                include: {
+                    UserClass: {
+                        select: {
+                            userId: true,
+                        },
+                    },
+                    ClassPost: {
+                        omit: {
+                            classId: true,
+                        },
+                    },
+                    ClassAssignment: {
+                        omit: {
+                            classId: true,
+                        },
+                    },
                 },
-                ClassPost: {
-                    omit: {
-                        classId: true
-                    }
-                },
-                ClassAssignment: {
-                    omit: {
-                        classId: true
-                    }
-                }
-            }
-        })).map((item) => new Class(item));
+            })
+        ).map((item) => new Class(item));
     }
 
     async getOne(payload) {
@@ -86,46 +92,46 @@ export class ClassRepo {
             include: {
                 UserClass: {
                     select: {
-                        userId: true
-                    }
+                        userId: true,
+                    },
                 },
                 ClassPost: {
                     omit: {
-                        classId: true
-                    }
+                        classId: true,
+                    },
                 },
                 ClassAssignment: {
                     omit: {
-                        classId: true
-                    }
-                }
-            }
+                        classId: true,
+                    },
+                },
+            },
         });
         return new Class(response);
     }
 
     async addUser(payload) {
         const target = new Class(payload);
-        const availableUsers = await this.prisma.user.findMany({
-            where: {
-                id: {
-                    in: payload.users
-                }
-            },
-            select: {
-                id: true
-            }
-        });
-        const userList = payload.users.map(user => ({
-            classId: target.id,
-            userId: user
-        })).filter((item) => item in availableUsers);
+        const availableUsers = (
+            await this.prisma.user.findMany({
+                select: {
+                    id: true,
+                },
+            })
+        ).map((item) => item.id);
+        const userList = payload.users
+            .filter((item) => availableUsers.includes(item))
+            .map((user) => ({
+                classId: target.id,
+                userId: user,
+            }));
 
+        console.log(target);
 
         await this.prisma.userClass.createMany({
             data: userList,
-            skipDuplicates: true
-        })
+            skipDuplicates: true,
+        });
 
         return new Class(target.id);
     }
@@ -137,8 +143,8 @@ export class ClassRepo {
         await this.prisma.userClass.delete({
             where: {
                 classId: target.id,
-                userId: payload.userId
-            }
+                userId: payload.userId,
+            },
         });
     }
 
@@ -151,7 +157,7 @@ export class ClassRepo {
             },
             select: {
                 userId: true,
-            }
+            },
         });
     }
 }

@@ -31,7 +31,12 @@ export class AuthController {
     @MessagePattern(AUTH_PATTERN.AUTHENTICATE)
     @Bind(Payload())
     async authenticate({ accessToken }) {
-        console.log(accessToken);
         return await this.AuthService.authenticate(accessToken);
+    }
+
+    @MessagePattern(AUTH_PATTERN.REFRESH)
+    @Bind(Payload())
+    async refresh({ refreshToken }) {
+        return await this.AuthService.refreshUserToken(refreshToken);
     }
 }

@@ -1,6 +1,6 @@
 import { Controller, Bind, Dependencies } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern'
+import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
 
 import { UserService } from './app/services/user.service';
 
@@ -26,7 +26,7 @@ export class UserController {
     @MessagePattern(USER_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
-        console.log("UserService got getOne")
+        console.log(id);
         return await this.service.getOne(id);
     }
 
@@ -59,5 +59,4 @@ export class UserController {
     async delete(id) {
         return await this.service.delete(id);
     }
-
 }

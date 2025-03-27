@@ -32,4 +32,10 @@ export class AuthService {
             .send(AUTH_PATTERN.REGISTER, payload)
             .toPromise();
     }
+
+    async refreshUserToken(payload = {}) {
+        return await this.authClient
+            .send(AUTH_PATTERN.REFRESH, payload)
+            .toPromise();
+    }
 }

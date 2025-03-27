@@ -5,6 +5,7 @@ const action = {
     REGISTER: 'register',
     AUTHENTICATE: 'authenticate',
     LOGOUT: 'logout',
+    REFRESH: 'refresh',
     GENERAL: `*`,
 };
 

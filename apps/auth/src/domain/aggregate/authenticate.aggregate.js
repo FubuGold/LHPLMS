@@ -1,4 +1,8 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import {
+    Injectable,
+    Dependencies,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
@@ -108,7 +112,7 @@ export class Authenticator {
 
     async login(username, password) {
         const user = await this.getUserByUserCredential(username, password);
-        if (!user) return null;
+        if (!user) throw new Error(`Login failed, credentials do not match`);
 
         return await this.generateToken(user);
     }
@@ -119,8 +123,6 @@ export class Authenticator {
     }
 
     async register(payload) {
-        console.log(payload);
-
         if (payload.password !== payload.confirmPassword)
             throw new Error(`Passwords confirmation don't match`);
 
@@ -138,15 +140,15 @@ export class Authenticator {
 
     async refreshUserToken(refreshToken) {
         //Check if refreshToken is existed in db
-        const refresh = this.UserTokenRepo.getByToken(refreshToken);
+        const refresh = await this.UserTokenRepo.getByToken(refreshToken);
 
         //If the token doesn't exist, it has been revoked
         if (!refresh) return null;
 
         //Now valid the token
-        const user = this.verifyToken(
+        const user = await this.verifyToken(
             refreshToken,
-            this.process.env['REFRESH_TOKEN'],
+            this.ConfigService.get('REFRESH_TOKEN'),
         );
 
         if (!user) return null;

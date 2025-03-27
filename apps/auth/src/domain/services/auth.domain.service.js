@@ -22,4 +22,8 @@ export class AuthDomainService {
     async getUserByToken(accessToken) {
         return await this.Authenticator.getUserByToken(accessToken);
     }
+
+    async refreshUserToken(refreshToken) {
+        return await this.Authenticator.refreshUserToken(refreshToken);
+    }
 }
