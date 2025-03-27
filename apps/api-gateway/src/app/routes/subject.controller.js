@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Query,
+    Body,
 } from '@nestjs/common';
 import { SubjectService } from '../../domain/services/subject.service';
 
@@ -18,7 +19,8 @@ export class SubjectController {
         this.SubjectService = SubjectService;
     }
 
-    @Get()(Query())
+    @Get()
+    @Bind(Query())
     getAll(query) {
         this.SubjectService.getAll(query);
     }
@@ -26,7 +28,7 @@ export class SubjectController {
     @Get(':id')
     @Bind(Param())
     getOne(param) {
-        this.SubjectService.getOne(param)
+        this.SubjectService.getOne(param);
     }
 
     @Post()
@@ -38,10 +40,13 @@ export class SubjectController {
     @Patch(':id')
     @Bind(Param(), Body())
     update(param, body) {
-        this.SubjectService.update()
+        this.SubjectService.update({
+            id: param.id,
+            ...body,
+        });
     }
 
     @Delete(':id')
     @Bind(Param())
-    delete(id) { }
+    delete(id) {}
 }

@@ -119,8 +119,6 @@ export class Authenticator {
     }
 
     async register(payload) {
-        console.log(payload);
-
         if (payload.password !== payload.confirmPassword)
             throw new Error(`Passwords confirmation don't match`);
 
@@ -138,15 +136,15 @@ export class Authenticator {
 
     async refreshUserToken(refreshToken) {
         //Check if refreshToken is existed in db
-        const refresh = this.UserTokenRepo.getByToken(refreshToken);
+        const refresh = await this.UserTokenRepo.getByToken(refreshToken);
 
         //If the token doesn't exist, it has been revoked
         if (!refresh) return null;
 
         //Now valid the token
-        const user = this.verifyToken(
+        const user = await this.verifyToken(
             refreshToken,
-            this.process.env['REFRESH_TOKEN'],
+            this.ConfigService.get('REFRESH_TOKEN'),
         );
 
         if (!user) return null;

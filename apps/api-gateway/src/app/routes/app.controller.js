@@ -96,9 +96,27 @@ export class AppController {
 
     @Public()
     @Post('/refresh')
-    @Bind(Body())
-    async refreshUserToken(body) {
-        return await this.authService.refreshUserToken(body);
+    @Bind(Req(), Res())
+    async refreshUserToken(req, res) {
+        const accessToken = await this.authService.refreshUserToken({
+            refreshToken: req.cookies.refreshToken,
+        });
+
+        if (!accessToken)
+            throw new HttpException(
+                'Authentication failed',
+                HttpStatus.UNAUTHORIZED,
+            );
+
+        return res
+            .cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 15 * 60 * 1000,
+            })
+            .status(201)
+            .json({ message: 'Success' });
     }
 
     @Public()
