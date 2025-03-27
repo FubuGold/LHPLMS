@@ -26,6 +26,7 @@ export class UserRepo {
                 })
             ).id;
         } catch (err) {
+            console.error(err);
             return null;
         }
     }

@@ -1,4 +1,8 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import {
+    Injectable,
+    Dependencies,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
@@ -108,7 +112,7 @@ export class Authenticator {
 
     async login(username, password) {
         const user = await this.getUserByUserCredential(username, password);
-        if (!user) return null;
+        if (!user) throw new Error(`Login failed, credentials do not match`);
 
         return await this.generateToken(user);
     }

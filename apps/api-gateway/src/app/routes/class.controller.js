@@ -35,7 +35,7 @@ export class ClassController {
     @Bind(Body(), Req())
     async create(body, req) {
         return await this.classService.create({
-            ownerId: req.user,
+            ownerId: req.userId,
             ...body,
         });
     }
@@ -84,7 +84,7 @@ export class ClassController {
     async createPost(param, body, req) {
         return await this.postService.create({
             classId: param.classId,
-            ownerId: req.id,
+            ownerId: req.userId,
             ...body,
         });
     }
@@ -221,7 +221,7 @@ export class ClassController {
     async getAllSubmissions(param, query, req) {
         return await this.submissionService.getAll({
             classId: param.classId,
-            ownerId: req.user,
+            ownerId: req.userId,
             ...query,
         });
     }
@@ -243,8 +243,4 @@ export class ClassController {
             ...query,
         });
     }
-
-    @Get(':classId/users/:userId')
-    @Bind(Param(), Req())
-    async getOneUser(param, req) { }
 }

@@ -12,12 +12,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../../domain/services/auth.service';
 import { Public } from '../decorators/public.decorator';
+import { UserService } from '../../domain/services/user.service';
 
 @Controller()
-@Dependencies(AuthService)
+@Dependencies(AuthService, UserService)
 export class AppController {
-    constructor(authService) {
+    constructor(authService, userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     @Public()
@@ -123,5 +125,11 @@ export class AppController {
     @Get()
     hello() {
         return 'Hello';
+    }
+
+    @Get('/me')
+    @Bind(Req())
+    me(req) {
+        return this.userService.getOne(req.userId);
     }
 }
