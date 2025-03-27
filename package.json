@@ -15,6 +15,7 @@
         "assignment:dev": "cd ./apps/assignment && nodemon",
         "class:dev": "cd ./apps/class && nodemon",
         "start:dev": "concurrently \"npm run gateway:dev\" \"npm run user:dev\" \"npm run auth:dev\" \"npm run post:dev\" \"npm run assignment:dev\" \"npm run class:dev\"",
+        "question-bank:dev": "cd ./apps/question-bank && nodemon",
         "test": "jest --watch",
         "test:cov": "jest --coverage",
         "test:e2e": "jest --config ./apps/backend/test/jest-e2e.json",

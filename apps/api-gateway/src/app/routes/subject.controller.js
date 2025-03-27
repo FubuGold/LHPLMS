@@ -1,5 +1,6 @@
 import {
     Bind,
+    Body,
     Controller,
     Delete,
     Dependencies,
@@ -18,7 +19,8 @@ export class SubjectController {
         this.SubjectService = SubjectService;
     }
 
-    @Get()(Query())
+    @Get()
+    @Bind(Query())
     getAll(query) {
         this.SubjectService.getAll(query);
     }
