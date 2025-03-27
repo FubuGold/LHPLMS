@@ -6,6 +6,7 @@ const action = {
     DELETE: `delete`,
     GET_ONE: `getOne`,
     GET_ALL: `getAll`,
+    GET_ONE_QUESTION: 'question.getOne',
     ADD_QUESTION: 'question.add',
     DELETE_QUESTION: 'question.delete',
     GENERAL: `*`,

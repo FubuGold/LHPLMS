@@ -6,7 +6,7 @@ export class QuestionBank {
         this.name = obj.name;
         this.Question = obj.Question;
         this.ownerId = obj.ownerId;
-        if (this.ownerId === undefined) this.ownerId = user;
+        if (this.ownerId === undefined) this.ownerId = userId;
         this.createAt = obj.createAt;
     }
 }

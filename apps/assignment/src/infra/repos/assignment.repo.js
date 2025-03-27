@@ -43,7 +43,6 @@ export class AssignmentRepo {
     }
 
     async create(payload) {
-        console.log(payload);
         return await this.prisma.classAssignment.create({
             data: payload,
             select: {

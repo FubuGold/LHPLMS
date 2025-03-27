@@ -9,7 +9,6 @@ import {
     Patch,
     Post,
     Query,
-    Body,
 } from '@nestjs/common';
 import { SubjectService } from '../../domain/services/subject.service';
 
@@ -49,5 +48,5 @@ export class SubjectController {
 
     @Delete(':id')
     @Bind(Param())
-    delete(id) {}
+    delete(id) { }
 }

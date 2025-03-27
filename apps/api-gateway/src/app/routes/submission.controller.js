@@ -15,11 +15,11 @@ export class SubmissionController {
         this.SubmissionService = SubmissionService;
     }
 
-    getAll() {}
+    getAll() { }
 
-    getOne(id) {}
+    getOne(id) { }
 
-    createSubmission() {}
+    createSubmission() { }
 
-    deleteSubmission(id) {}
+    deleteSubmission(id) { }
 }

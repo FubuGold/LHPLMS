@@ -26,7 +26,6 @@ export class UserController {
     @MessagePattern(USER_PATTERN.GET_ONE)
     @Bind(Payload())
     async getOne(id) {
-        console.log(id);
         return await this.service.getOne(id);
     }
 
@@ -38,7 +37,6 @@ export class UserController {
     @MessagePattern(USER_PATTERN.CREATE)
     @Bind(Payload())
     async register(payload) {
-        console.log('User controller received register');
         return await this.service.register(payload);
     }
 

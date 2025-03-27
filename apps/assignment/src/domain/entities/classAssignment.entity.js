@@ -9,9 +9,10 @@ export class ClassAssignment {
         this.isTest = obj.isTest;
         if (typeof this.isTest == 'string') this.isTest = (this.isTest == 'true');
         this.ownerId = obj.ownerId;
-        if (this.ownerId === undefined) this.ownerId = obj.user;
+        if (this.ownerId === undefined) this.ownerId = obj.userId;
 
         this.ClassAssignmentQuestion = obj.ClassAssignmentQuestion;
+        this.createAt = obj.createAt;
 
         Object.freeze(this);
     }

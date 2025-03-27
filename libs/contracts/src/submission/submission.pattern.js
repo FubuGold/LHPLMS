@@ -1,8 +1,7 @@
 const name = 'submission';
 
 const action = {
-  CREATE: 'create',
-  DELETE: 'delete',
+  SUBMIT: 'submit',
   GET_ONE: 'getOne',
   GET_ALL: 'getAll',
   GENERAL: '*',

@@ -16,7 +16,6 @@ export class AssignmentService {
   }
 
   async create(payload) {
-    console.log();
     let assignmentQuestion = payload.question;
     const assignmentId = (await this.assignmentRepo.create(new ClassAssignment(payload))).id;
     if (assignmentQuestion !== undefined && assignmentQuestion !== null) {
@@ -48,8 +47,11 @@ export class AssignmentService {
     return await this.assignmentRepo.delete(id.id);
   }
 
+  async getOneQuestion(payload) {
+    return await this.assignmentQuestionRepo.getOne(payload.id);
+  }
+
   async addQuestion(payload) {
-    console.log(payload);
     let res = await lastValueFrom(
       this.gateway.send(QUESTIONBANK_PATTERN.GET_ONE_QUESTION, payload.origin)
     );
