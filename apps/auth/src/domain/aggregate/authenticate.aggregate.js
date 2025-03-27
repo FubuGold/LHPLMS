@@ -1,13 +1,13 @@
-import { Injectable, Dependencies, Bind, Inject } from '@nestjs/common';
+import { Injectable, Dependencies } from '@nestjs/common';
 import { UserCredentialRepo } from '@/infra/repos/userCredential.repo';
 import { UserTokenRepo } from '@/infra/repos/userToken.repo';
 import { UserToken } from '@/domain/entities/userToken.entity';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { User } from '../entities/user.entity';
 import { USER_PATTERN } from '@app/lib/contracts/user/user.pattern';
-import bcrypt from 'bcrypt';
 import { lastValueFrom } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 @Dependencies(
@@ -33,16 +33,22 @@ export class Authenticator {
     }
 
     async createNewAccessToken(user) {
-        return await this.JwtService.signAsync(user.id, {
-            secret: this.ConfigService.get('ACCESS_TOKEN'),
-            expiresIn: '3h',
-        });
+        return await this.JwtService.signAsync(
+            { id: user.id },
+            {
+                secret: this.ConfigService.get('ACCESS_TOKEN'),
+                expiresIn: '15m',
+            },
+        );
     }
     async createNewRefreshToken(user) {
-        return await this.JwtService.signAsync(user.id, {
-            secret: this.ConfigService.get('REFRESH_TOKEN'),
-            expiresIn: '7d',
-        });
+        return await this.JwtService.signAsync(
+            { id: user.id },
+            {
+                secret: this.ConfigService.get('REFRESH_TOKEN'),
+                expiresIn: '7d',
+            },
+        );
     }
 
     async getUserByUserCredential(username, password) {
@@ -62,8 +68,8 @@ export class Authenticator {
         return user;
     }
     async generateToken(user) {
-        const access = await createNewAccessToken(user),
-            refresh = await createNewRefreshToken(user);
+        const access = await this.createNewAccessToken(user),
+            refresh = await this.createNewRefreshToken(user);
 
         const userToken = await this.UserTokenRepo.getByUserId(user.id);
         if (userToken) await this.UserTokenRepo.delete(userToken);
@@ -95,6 +101,7 @@ export class Authenticator {
         try {
             return await this.JwtService.verifyAsync(token, { secret: secret });
         } catch (error) {
+            console.error(error);
             return null;
         }
     }
@@ -106,28 +113,27 @@ export class Authenticator {
         return await this.generateToken(user);
     }
 
-    async register(name, username, dob, avatar, password, confirmPassword) {
-        if (password !== confirmPassword)
+    async logout(refreshToken) {
+        const token = await this.UserTokenRepo.getByToken(refreshToken);
+        await this.UserTokenRepo.delete(token);
+    }
+
+    async register(payload) {
+        console.log(payload);
+
+        if (payload.password !== payload.confirmPassword)
             throw new Error(`Passwords confirmation don't match`);
 
-        const newUser = new User({
-            name: name,
-            username: username,
-            dob: dob,
-            avatar: avatar,
-        });
+        const newUser = new User(payload);
 
-        const user = await lastValueFrom(
-            this.userClient.send(USER_PATTERN.CREATE, newUser),
-        );
+        const user = await this.userClient
+            .send(USER_PATTERN.CREATE, newUser)
+            .toPromise();
 
-        if (!user) throw new Error(`User with ${username} already exists`);
+        if (!user)
+            throw new Error(`User with ${payload.username} already exists`);
 
-        console.log(user);
-
-        await this.registerNewUserCredential(user, password);
-
-        return true;
+        return await this.registerNewUserCredential(user, payload.password);
     }
 
     async refreshUserToken(refreshToken) {

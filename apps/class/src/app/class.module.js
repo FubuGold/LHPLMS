@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ClassService } from '../domain/service/class.service';
 import { PrismaClient } from '@prisma/client';
 import { ClassController } from './class.controller';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClassRepo } from '../infra/repos/class.repo';
 
 
 @Module({
@@ -17,6 +19,6 @@ import { ClassController } from './class.controller';
     ]),
   ],
   controllers: [ClassController],
-  providers: [ClassService, PrismaClient],
+  providers: [ClassService, PrismaClient, ClassRepo],
 })
-export class AppModule { }
+export class ClassModule { }

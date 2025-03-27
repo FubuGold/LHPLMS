@@ -21,6 +21,12 @@ export class AuthService {
             .toPromise();
     }
 
+    async logout(payload = {}) {
+        return await /*lastValueFrom(*/
+        this.authClient.send(AUTH_PATTERN.LOGOUT, payload).toPromise(); //,
+        // );
+    }
+
     async register(payload = {}) {
         return await this.authClient
             .send(AUTH_PATTERN.REGISTER, payload)

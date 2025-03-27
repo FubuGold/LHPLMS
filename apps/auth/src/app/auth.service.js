@@ -12,21 +12,15 @@ export class AuthService {
         return await this.authDomainService.login(username, password);
     }
 
-    async register(name, username, dob, avatar, password, confirmPassword) {
-        return await this.authDomainService.register(
-            name,
-            username,
-            dob,
-            avatar,
-            password,
-            confirmPassword,
-        );
+    async logout(refreshToken) {
+        return await this.authDomainService.logout(refreshToken);
     }
 
-    async authenticate(accessToken, refreshToken) {
-        return await this.authDomainService.getUserByToken(
-            accessToken,
-            refreshToken,
-        );
+    async register(payload) {
+        return await this.authDomainService.register(payload);
+    }
+
+    async authenticate(accessToken) {
+        return await this.authDomainService.getUserByToken(accessToken);
     }
 }

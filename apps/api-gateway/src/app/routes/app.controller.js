@@ -6,6 +6,7 @@ import {
     Post,
     Bind,
     Res,
+    Req,
     Body,
     Get,
 } from '@nestjs/common';
@@ -21,20 +22,30 @@ export class AppController {
 
     @Public()
     @Post('/login')
-    @Bind(Body('username'), Body('password'), Res())
-    async login(username, password, res) {
-        const { accessToken, refreshToken } = await this.authService.login(
+    @Bind(Body(), Res())
+    async login({ username, password }, res) {
+        const { accessToken, refreshToken } = await this.authService.login({
             username,
             password,
-        );
+        });
         if (!accessToken || !refreshToken)
             throw new HttpException(
                 'Authentication failed',
                 HttpStatus.UNAUTHORIZED,
             );
         return res
-            .setHeader('Authorization', `Bearer ${accessToken}`)
-            .setHeader('X-Refresh-Token', `Bearer ${refreshToken}`)
+            .cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 15 * 60 * 1000,
+            })
+            .cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
             .status(201)
             .json({ message: 'Success' });
     }
@@ -43,16 +54,44 @@ export class AppController {
     @Post('/register')
     @Bind(Body(), Res())
     async register(body, res) {
-        const succeeded = await this.authService.register(body);
-        // console.log(succeeded);
-
-        if (!succeeded)
+        try {
+            await this.authService.register(body);
+            return res.status(201).json({ message: 'Success' });
+        } catch (error) {
             throw new HttpException(
-                'Registration failed',
+                `Registration failed. Error: ${error}`,
                 HttpStatus.BAD_REQUEST,
             );
+        }
+    }
 
-        return res.status(201).json({ message: 'Success' });
+    @Public()
+    @Post('/logout')
+    @Bind(Req(), Res())
+    async logout(req, res) {
+        try {
+            await this.authService.logout({
+                refreshToken: req.cookies.refreshToken,
+            });
+            return res
+                .clearCookie('accessToken', req.cookies.accessToken, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'strict',
+                })
+                .clearCookie('refreshToken', req.cookies.refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'strict',
+                })
+                .status(201)
+                .json({ message: 'Success' });
+        } catch (error) {
+            throw new HttpException(
+                `Logout failed. ${error}`,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
     }
 
     @Public()
