@@ -12,7 +12,7 @@ import { SubmissionService } from '../../domain/services/submission.service';
             {
                 name: 'CLASS_SERVICE',
                 transport: Transport.TCP,
-                options: { port: 3002 },
+                options: { port: 3010 },
                 retryAttempts: 10,
                 retryDelay: 1000,
             },
@@ -53,4 +53,4 @@ import { SubmissionService } from '../../domain/services/submission.service';
         SubmissionService,
     ],
 })
-export class ClassModule {}
+export class ClassModule { }

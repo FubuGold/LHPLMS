@@ -5,22 +5,26 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const config = new DocumentBuilder()
-    .setTitle('Document')
-    .setDescription('Document for endpoints')
-    .build();
+    const config = new DocumentBuilder()
+        .setTitle('Document')
+        .setDescription('Document for endpoints')
+        .build();
 
-  const app = await NestFactory.create(AppModule);
-  app.connectMicroservice({
-    transport: Transport.TCP,
-    options: { port: 3001 },
-  });
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+    const app = await NestFactory.create(AppModule);
+    app.connectMicroservice({
+        transport: Transport.TCP,
+        options: { port: 3001 },
+    });
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, documentFactory);
 
-  app.use(cookieParser());
+    app.use(cookieParser());
+    app.enableCors({
+        origin: '*',
+        credentials: true,
+    });
 
-  await app.startAllMicroservices();
-  await app.listen(3000);
+    await app.startAllMicroservices();
+    await app.listen(3000);
 }
 bootstrap();

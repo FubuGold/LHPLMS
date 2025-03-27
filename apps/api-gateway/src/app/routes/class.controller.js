@@ -119,10 +119,11 @@ export class ClassController {
     }
 
     @Delete(':classId')
-    @Delete(Param())
+    @Bind(Param())
     async deleteOne(param) {
+        console.log(param);
         return await this.classService.delete({
-            id: param.id,
+            id: param.classId,
         });
     }
 
@@ -165,8 +166,8 @@ export class ClassController {
 
     @Get('')
     @Bind(Query())
-    async getAll() {
-        return await this.classService.getAll();
+    async getAll(query) {
+        return await this.classService.getAll(query);
     }
 
     @Get(':classId')
@@ -237,7 +238,7 @@ export class ClassController {
     @Get(':classId/users')
     @Bind(Param(), Query())
     async getAllUser(param, query) {
-        return await this.classService.getAll({
+        return await this.classService.getAllUser({
             id: param.classId,
             ...query,
         });
@@ -245,5 +246,5 @@ export class ClassController {
 
     @Get(':classId/users/:userId')
     @Bind(Param(), Req())
-    async getOneUser(param, req) {}
+    async getOneUser(param, req) { }
 }
