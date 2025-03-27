@@ -1,7 +1,6 @@
 import {
     Bind,
     Body,
-    ConsoleLogger,
     Controller,
     Delete,
     Dependencies,
@@ -12,6 +11,8 @@ import {
     Query,
 } from '@nestjs/common';
 import { QuestionBankService } from '../../domain/services/question-bank.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { QUESTIONBANK_PATTERN } from '@app/lib/contracts/question-bank/question-bank.pattern';
 @Controller('question-banks')
 @Dependencies(QuestionBankService)
 export class QuestionBankController {
@@ -51,14 +52,20 @@ export class QuestionBankController {
 
     @Get(':id/questions')
     @Bind(Param('id'), Query())
-    async getAllQuestions(id, queryParam) {
+    async getAllQuestion(id, queryParam) {
         return await this.questionBankService.getAllQuestion({ ...queryParam, questionBankId: id });
     }
 
     @Get(':id/questions/:questionId')
     @Bind(Param('id'), Param('questionId'))
-    async getOneQuestions(id, questionId) {
+    async getOneQuestion(id, questionId) {
         return await this.questionBankService.getOneQuestion(questionId);
+    }
+
+    @MessagePattern(QUESTIONBANK_PATTERN.GET_ONE_QUESTION)
+    @Bind(Payload())
+    async getOneQuestionTCP(payload) {
+        return await this.questionBankService.getOneQuestion(payload);
     }
 
     @Post(':id/questions')

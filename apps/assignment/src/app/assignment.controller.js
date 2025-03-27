@@ -39,4 +39,16 @@ export class AssignmentController {
   async delete(id) {
     return await this.service.delete(id);
   }
+
+  @MessagePattern(ASSIGNMENT_PATTERN.ADD_QUESTION)
+  @Bind(Payload())
+  async addQuestion(payload) {
+    return await this.service.addQuestion(payload);
+  }
+
+  @MessagePattern(ASSIGNMENT_PATTERN.DELETE_QUESTION)
+  @Bind(Payload())
+  async deleteQuestion(id) {
+    return await this.service.deleteQuestion(id);
+  }
 }

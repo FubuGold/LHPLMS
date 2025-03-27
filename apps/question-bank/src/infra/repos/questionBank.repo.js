@@ -12,6 +12,13 @@ export class QuestionBankRepo {
     async getAll(queryParam) {
         let res = await this.prisma.questionBank.findMany({
             where: queryParam,
+            include: {
+                Question: {
+                    omit: {
+                        questionBankId: true
+                    }
+                }
+            }
         });
 
         res.map((item) => new QuestionBank(item));
@@ -24,6 +31,13 @@ export class QuestionBankRepo {
             await this.prisma.questionBank.findUnique({
                 where: {
                     id: id
+                },
+                include: {
+                    Question: {
+                        omit: {
+                            questionBankId: true
+                        }
+                    }
                 }
             })
         );

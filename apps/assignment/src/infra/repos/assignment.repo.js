@@ -1,6 +1,7 @@
 import { Dependencies, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
-import { Assignment } from "../../domain/entities/assignment.entity";
+import { ClassAssignment } from "../../domain/entities/classAssignment.entity";
+import { ClassAssignmentQuestion } from "../../domain/entities/classAssignmentQuestion.entity";
 
 @Injectable()
 @Dependencies(PrismaService)
@@ -10,10 +11,17 @@ export class AssignmentRepo {
     }
 
     async getOne(id) {
-        return new Assignment(
+        return new ClassAssignment(
             await this.prisma.classAssignment.findUnique({
                 where: {
                     id: id
+                },
+                include: {
+                    ClassAssignmentQuestion: {
+                        omit: {
+                            assignmentId: true
+                        }
+                    }
                 }
             })
         );
@@ -22,8 +30,15 @@ export class AssignmentRepo {
     async getAll(where) {
         let res = await this.prisma.classAssignment.findMany({
             where: where,
+            include: {
+                ClassAssignmentQuestion: {
+                    omit: {
+                        assignmentId: true
+                    }
+                }
+            }
         })
-        res.map((item) => new Assignment(item));
+        res.map((item) => new ClassAssignment(item));
         return res;
     }
 
@@ -42,7 +57,7 @@ export class AssignmentRepo {
             where: {
                 id: payload.id
             },
-            update: payload,
+            data: payload,
             select: {
                 id: true
             }

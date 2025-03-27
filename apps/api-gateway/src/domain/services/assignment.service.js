@@ -16,6 +16,7 @@ export class AssignmentService {
     }
 
     async getOne(payload = {}) {
+        console.log(payload);
         return await lastValueFrom(
             this.assignmentClient.send(ASSIGNMENT_PATTERN.GET_ONE, payload)
         );
@@ -41,7 +42,7 @@ export class AssignmentService {
 
     async addQuestions(payload = {}) {
         return await this.assignmentClient
-            .send(ASSIGNMENT_PATTERN.ADD_QUESTIONS, payload)
+            .send(ASSIGNMENT_PATTERN.ADD_QUESTION, payload)
             .toPromise();
     }
 

@@ -15,7 +15,9 @@ export class AssignmentController {
     }
 
     @Get(':assignmentId')
+    @Bind(Param('assignmentId'))
     async getOne(id) {
+        console.log(id);
         return await this.assignmentService.getOne(id);
     }
 

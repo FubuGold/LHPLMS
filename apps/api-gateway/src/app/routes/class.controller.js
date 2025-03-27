@@ -54,7 +54,7 @@ export class ClassController {
     @Bind(Param(), Body())
     async addQuestions(param, body) {
         return await this.assignmentService.addQuestions({
-            id: param.assignmentId,
+            assignmentId: param.assignmentId,
             classId: param.classId,
             ...body,
         });
@@ -140,7 +140,7 @@ export class ClassController {
     @Bind(Param())
     async deleteOneQuestion(param) {
         return await this.assignmentService.deleteQuestion({
-            id: param.assignmentId,
+            assignmentId: param.assignmentId,
             questionId: param.questionId,
             classId: param.classId,
         });
