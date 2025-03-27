@@ -15,6 +15,8 @@ import { ClassService } from '../../domain/services/class.service';
 import { PostService } from '../../domain/services/post.service';
 import { AssignmentService } from '../../domain/services/assignment.service';
 import { SubmissionService } from '../../domain/services/submission.service';
+import { ASSIGNMENT_PATTERN } from '@app/lib/contracts/assignment/assignment.pattern';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('classes')
 @Dependencies(ClassService, PostService, AssignmentService, SubmissionService)
@@ -121,7 +123,6 @@ export class ClassController {
     @Delete(':classId')
     @Bind(Param())
     async deleteOne(param) {
-        console.log(param);
         return await this.classService.delete({
             id: param.classId,
         });
@@ -207,6 +208,7 @@ export class ClassController {
         });
     }
 
+
     @Get(':classId/assignments/:assignmentId')
     @Bind(Param())
     async getOneAssignment(param) {
@@ -214,6 +216,12 @@ export class ClassController {
             id: param.assignmentId,
             classId: param.classId,
         });
+    }
+
+    @MessagePattern(ASSIGNMENT_PATTERN.GET_ONE_QUESTION)
+    @Bind(Payload())
+    async getOneAssignmentQuestionTCP(payload) {
+        return await this.assignmentService.getOneQuestion(payload);
     }
 
     @Get(':classId/submissions')

@@ -10,7 +10,6 @@ export class UserSettingRepo {
     }
 
     async update(payload) {
-        console.log(payload);
         return await this.prisma.userSetting.upsert({
             where: { userId: payload.userId },
             update: { ...payload },
@@ -25,7 +24,6 @@ export class UserSettingRepo {
                     userId: userId
                 }
             }));
-            console.log(res);
             return res;
         }
         catch (err) {

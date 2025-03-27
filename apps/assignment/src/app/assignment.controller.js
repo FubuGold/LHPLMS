@@ -40,6 +40,12 @@ export class AssignmentController {
     return await this.service.delete(id);
   }
 
+  @MessagePattern(ASSIGNMENT_PATTERN.GET_ONE_QUESTION)
+  @Bind(Payload())
+  async getOneQuestion(payload) {
+    return await this.service.getOneQuestion(payload);
+  }
+
   @MessagePattern(ASSIGNMENT_PATTERN.ADD_QUESTION)
   @Bind(Payload())
   async addQuestion(payload) {

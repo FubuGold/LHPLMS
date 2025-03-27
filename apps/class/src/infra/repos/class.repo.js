@@ -126,8 +126,6 @@ export class ClassRepo {
                 userId: user,
             }));
 
-        console.log(target);
-
         await this.prisma.userClass.createMany({
             data: userList,
             skipDuplicates: true,

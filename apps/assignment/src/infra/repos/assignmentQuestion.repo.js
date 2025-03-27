@@ -28,7 +28,6 @@ export class AssignmentQuestionRepo {
     }
 
     async create(payload) {
-        console.log(payload);
         return await this.prisma.classAssignmentQuestion.create({
             data: payload,
             select: {
@@ -50,7 +49,6 @@ export class AssignmentQuestionRepo {
     }
 
     async delete(id) {
-        console.log(id);
         await this.prisma.classAssignmentQuestion.delete({
             where: {
                 id: id

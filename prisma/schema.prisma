@@ -108,7 +108,7 @@ model Submission {
   createAt     DateTime @default(now()) @db.Timestamptz
 
   owner            User               @relation(fields: [ownerId], references: [id])
-  submissionAnswer SubmissionAnswer[]
+  SubmissionAnswer SubmissionAnswer[]
 }
 
 model SubmissionAnswer {
